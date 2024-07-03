@@ -64,10 +64,10 @@ class Task(db.Model):
     def accept(username, task_uid):
         user = User.get_user(username)
         task = Task.get_task(task_uid)
-        if user.current_task_number == user.task_limit:
+        if user.current_task_number >= user.task_limit:
             return {'success': False,
                     'message': f'User {username} has the maximum number of tasks allowed'}
-        elif task.current_user_number == task.user_limit:
+        elif task.current_user_number >= task.user_limit:
             return {'success': False,
                     'message': 'The maximum allowed number of users has already been assigned to this task'}
         task.users.append(user)
