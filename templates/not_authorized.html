@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block mainmenu %}{% endblock mainmenu %}
+
+{% block content %}
+{% if current_user.is_authenticated %}
+<p><h2>You must <a class="link-opacity-75-hover" href="{{ url_for('logout', next=request.endpoint or url_for('profile')) }}">authorize</a> first to get access to that page</h2>
+{% else %}
+<p><h2>You must <a class="link-opacity-75-hover" href="{{ url_for('login', next=request.endpoint or url_for('profile')) }}">authorize</a> first to get access to that page</h2>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,71 @@
+{% extends 'base.html' %}
+
+{% block mainmenu %}{% endblock mainmenu %}
+{% block content %}
+<div class="d-flex align-items-center justify-content-center vh-100">
+    <div class="border p-4 position-relative" style="width: 25%; min-width: 300px">
+        <form id="RegForm" method="post" class="row g-3" novalidate>
+            <h1 class="text-center">{{ title }}</h1>
+
+            {{ form.hidden_tag() }}
+
+            {% for field in form if field.name not in ['csrf_token', 'submit'] %}
+                <div class="col-md-12 position-relative">
+                    {% if field.errors %}
+                        {{ field(class="form-control is-invalid") }}
+                        <div class="invalid-feedback">
+                            {% set seen_errors = [] %}
+                            {% for e in field.errors %}
+                                {% if e not in seen_errors %}
+                                    <span>{{ e }}</span>
+                                    {% set _ = seen_errors.append(e) %}
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ field(class="form-control") }}
+                    {% endif %}
+                </div>
+            {% endfor %}
+            <div class="col-12 d-flex justify-content-between align-items-center">
+                <p class="position-relative m-2">
+                    <a class="link-opacity-75-hover link-underline link-underline-opacity-0" href="{{ url_for('mainpage') }}"><-Back to home page</a>
+                </p>
+                {{ form.submit(class="btn btn-primary position-relative") }}
+                <a class="link-opacity-75-hover link-underline link-underline-opacity-0 position-absolute" style="bottom: 2px; right: 20px" href="{{ url_for('login') }}">Already have an account?</a>
+            </div>
+        </form>
+    </div>
+</div>
+<script>
+    (() => {
+      'use strict'
+
+      const forms = document.querySelectorAll('.needs-validation')
+
+      Array.from(forms).forEach(form => {
+        form.addEventListener('submit', event => {
+          if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+          }
+
+          form.classList.add('was-validated')
+        }, false)
+      })
+    })()
+
+    window.addEventListener('pageshow', function(event) {
+        var form = document.getElementById('RegForm');
+        if (event.persisted) {
+            form.reset();
+            form.classList.remove('was-validated');
+        }
+    });
+
+    window.onload = function() {
+        document.getElementById('RegForm').reset();
+    };
+
+</script>
+{% endblock %}
