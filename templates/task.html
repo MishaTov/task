@@ -9,7 +9,7 @@
         <button type="button" class="btn btn-secondary btn-sm align-self-center" style="height: 30px; margin: 0px 0px 0px 10px" id="edit-task">Edit task</button>
     </div>
     <div class="position-relative top-0 end-0 d-flex">
-        <div class="position-relative" style="">{{ task.label }}</div>
+        <div class="position-relative" id="task-label">{{ task.label }}</div>
         <span class="fs-5 position-relative" style="color: {{ color[task.label] }}; top: -4px; left: 3px"> ● </span>
     </div>
 {#    <div class="position-relative">#}
@@ -19,7 +19,7 @@
     <span class="fw-bold">Time remaining:</span> <span class="time-left" data-deadline="{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%S') }}"></span>
     </div>
     <div class="d-inline-flex" id="accept-reject-button" url="{{ url_for('acceptreject', task_uid=task.uid) }}" cur_user="{{ current_user.username }}" task_uid="{{ task.uid }}">
-        {% if current_user.username in [task.users] %}
+        {% if current_user in task.users %}
             <button type="button" class="btn btn-primary visually-hidden" id="accept-task" style="margin-top: 5px; padding-top: 3px; padding-bottom: 3px; width: 80px; text-align: center">Accept</button>
             <button type="button" class="btn btn-danger" id="reject-task" style="margin-top: 5px; padding-top: 3px; padding-bottom: 3px; width: 80px; text-align: center">Reject</button>
         {% else %}
@@ -27,6 +27,18 @@
             <button type="button" class="btn btn-danger visually-hidden" id="reject-task" style="margin-top: 5px; padding-top: 3px; padding-bottom: 3px; width: 80px; text-align: center">Reject</button>
         {% endif %}
     </div>
+<br>
+    <span class="d-inline-flex" id="assigned-users" style="margin-top: 5px">
+        {% if task.users %}
+            Assigned to: &nbsp
+            {% for user in task.users %}
+                <a href="{{ url_for('profile', username=user.username) }}">{{ user.username }}</a>
+                {% if not loop.last %}, &nbsp{% endif %}
+            {% endfor %}
+        {% else %}
+            No one does this task
+        {%  endif %}
+    </span>
 {#    </div>#}
     <div class="text-break w-50" style="margin: 80px 0px 0px 0px">
         <h3>Description:</h3>
@@ -37,7 +49,7 @@
             <a href="{{ url_for('downloadfile', file_uid=file.uid) }}" class="btn btn-outline-dark d-flex d-inline-flex" style="height: 30px; max-width: 500px; font-size: 14px; padding: 2px 5px; align-items: center">{{ file.filename }}</a>
         {% endfor %}
     </div>
-    <p class="mt-5"><span class="fw-bold">Created:</span> {{ task.created.strftime('%d %B %Y') }} by <a href="">{{ task.created_by }}</a></p>
+    <p class="mt-5"><span class="fw-bold">Created:</span> {{ task.created.strftime('%d %B %Y') }} by <a href="{{ url_for('profile', username=task.created_by) }}">{{ task.created_by }}</a></p>
 </div>
 
 <script src="{{ url_for('static', filename='left_time.js') }}"></script>

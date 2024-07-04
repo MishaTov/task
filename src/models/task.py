@@ -75,6 +75,7 @@ class Task(db.Model):
         task.current_user_number += 1
         db.session.commit()
         return {'success': True,
+                'users': list(map(lambda x: x.username, task.users)),
                 'message': f'Task is assigned to user {username}'}
 
     @staticmethod
@@ -92,11 +93,13 @@ class Task(db.Model):
         task.current_user_number -= 1
         db.session.commit()
         return {'success': True,
+                'users': list(map(lambda x: x.username, task.users)),
                 'message': f'User {username} is no longer assigned to this task'}
 
     def __repr__(self):
         return (f'Task({self.id}, \n'
                 f'{self.subject}, \n'
+                f'{self.description} \n'
                 f'{self.created.strftime("%d %B %Y %H:%M:%S")}, \n'
                 f'{self.deadline.strftime("%d %B %Y %H:%M:%S")}, \n'
                 f'{self.created_by}, \n'

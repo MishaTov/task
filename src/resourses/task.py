@@ -16,9 +16,15 @@ class TaskDescription(BaseResource):
                        'Missed the deadline': '#FF0000'}
         return make_response(self.render_template('task.html', color=color_label, task=task))
 
+    @staticmethod
+    def patch(task_uid, **fields):
+        task = Task.get_task(task_uid)
+        for attr, value in fields.items():
+            if hasattr(task, attr):
+                setattr(task, attr, value)
+
 
 class AcceptReject(BaseResource):
-
     @staticmethod
     def post(**kwargs):
         data = request.get_json()
