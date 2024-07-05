@@ -17,14 +17,12 @@ function accept() {
     rejectButton.classList.remove('visually-hidden')
     // x => x.textContent
     let usernames = Array.from(users.querySelectorAll('a')).map(x => buildLink(x.textContent))
-    usernames.push(buildLink(user))
-    usernames = usernames.join(', &nbsp').trim()
-    // if (usernames) {
-    //     users.innerHTML = 'Assigned to: &nbsp' + usernames
-    // } else {
-    //     users.innerHTML = 'Assigned to: &nbsp' + buildLink(user)
-    // }
-    users.innerHTML = 'Assigned to: &nbsp' + usernames
+    if (usernames) {
+        usernames.push(buildLink(user))
+        users.innerHTML = 'Assigned to: &nbsp' + usernames.join(', &nbsp')
+    } else {
+        users.innerHTML = 'Assigned to: &nbsp' + buildLink(user)
+    }
 
     // userLinks.forEach(link => {
     //     if (link.textContent === user) {
@@ -46,9 +44,9 @@ function reject() {
     acceptButton.classList.remove('disabled')
     acceptButton.classList.remove('visually-hidden')
     let usernames = Array.from(users.querySelectorAll('a')).map(x => buildLink(x.textContent))
-    usernames = usernames.splice(usernames.indexOf(user), 1).join(', &nbsp').trim()
-    if (usernames.trim()) {
-        users.innerHTML = 'Assigned to: &nbsp' + usernames
+    usernames.splice(usernames.indexOf(user), 1)
+    if (usernames.join(', &nbsp').trim()) {
+        users.innerHTML = 'Assigned to: &nbsp' + usernames.join(', &nbsp')
     } else {
         users.innerHTML = 'No one does this task'
     }
