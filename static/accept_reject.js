@@ -6,16 +6,26 @@ const user = document.querySelector('#accept-reject-button').getAttribute('cur_u
 const taskUid = document.querySelector('#accept-reject-button').getAttribute('task_uid')
 const users = document.querySelector('#assigned-users')
 
+
+function buildLink(username) {
+    return `<a href="/profile/${username}">${username}</a>`
+}
+
 function accept() {
     acceptButton.classList.add('visually-hidden')
     rejectButton.classList.remove('disabled')
     rejectButton.classList.remove('visually-hidden')
     // x => x.textContent
-    let usernames = Array.from(users.querySelectorAll('a')).map(x => x.textContent)
-    if (usernames){
-        let links = usernames.map(x => `<a href="/profile/${x}">${x}</a>`)
-        users.innerHTML
-    }
+    let usernames = Array.from(users.querySelectorAll('a')).map(x => buildLink(x.textContent))
+    usernames.push(buildLink(user))
+    usernames = usernames.join(', &nbsp').trim()
+    // if (usernames) {
+    //     users.innerHTML = 'Assigned to: &nbsp' + usernames
+    // } else {
+    //     users.innerHTML = 'Assigned to: &nbsp' + buildLink(user)
+    // }
+    users.innerHTML = 'Assigned to: &nbsp' + usernames
+
     // userLinks.forEach(link => {
     //     if (link.textContent === user) {
     //         link.remove()
@@ -28,28 +38,26 @@ function accept() {
     // else{
     //     users.innerHTML = `Assigned to: &nbsp<a href="/profile/${user}">${user}</a>`
     // }
-    users.innerHTML = userLinks
+    // users.innerHTML = userLinks
 }
+
 function reject() {
     rejectButton.classList.add('visually-hidden')
     acceptButton.classList.remove('disabled')
     acceptButton.classList.remove('visually-hidden')
-    let userLinks = users.querySelectorAll('a')
-    userLinks.forEach(link => {
-        if (link.textContent === user) {
-            link.remove()
-        }
-    })
-    const startInd = users.indexOf(user)
-    if (!users.querySelector('a')) {
+    let usernames = Array.from(users.querySelectorAll('a')).map(x => buildLink(x.textContent))
+    usernames = usernames.splice(usernames.indexOf(user), 1).join(', &nbsp').trim()
+    if (usernames.trim()) {
+        users.innerHTML = 'Assigned to: &nbsp' + usernames
+    } else {
         users.innerHTML = 'No one does this task'
     }
 }
 
-function showInfo(success, message){
+function showInfo(success, message) {
     const color = success ? 'green' : 'red'
     const msg = document.querySelector('#info-message')
-    if (msg){
+    if (msg) {
         msg.innerHTML = message
         msg.style.color = color
         return
@@ -64,10 +72,10 @@ function showInfo(success, message){
     buttonDiv.append(infoMessage)
 }
 
-function action(button){
+function action(button) {
     button.classList.add('disabled')
     const requestMethod = button === acceptButton ? 'POST' : 'DELETE'
-    fetch(url,{
+    fetch(url, {
         method: requestMethod,
         headers: {
             'Content-type': 'application/json'
@@ -76,16 +84,14 @@ function action(button){
     })
         .then(response => response.json())
         .then(data => {
-            if (data.success){
-                if (button === acceptButton){
+            if (data.success) {
+                if (button === acceptButton) {
                     accept()
 
-                }
-                else{
+                } else {
                     reject()
                 }
-            }
-            else{
+            } else {
                 button.classList.remove('disabled')
             }
             showInfo(data.success, data.message)
