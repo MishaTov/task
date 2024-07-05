@@ -5,7 +5,7 @@ const url = buttonDiv.getAttribute('url')
 const user = document.querySelector('#accept-reject-button').getAttribute('cur_user')
 const taskUid = document.querySelector('#accept-reject-button').getAttribute('task_uid')
 const users = document.querySelector('#assigned-users')
-
+let hideTimeout
 
 function buildLink(username) {
     return `<a href="/profile/${username}">${username}</a>`
@@ -39,21 +39,27 @@ function reject() {
 }
 
 function showInfo(success, message) {
+    clearTimeout(hideTimeout)
     const color = success ? 'green' : 'red'
     const msg = document.querySelector('#info-message')
     if (msg) {
         msg.innerHTML = message
         msg.style.color = color
-        return
+        msg.classList.remove('visually-hidden')
+    } else {
+        const infoMessage = document.createElement('span')
+        infoMessage.setAttribute('id', 'info-message')
+        infoMessage.innerHTML = message
+        infoMessage.style.color = color
+        infoMessage.style.fontSize = '14px'
+        infoMessage.style.alignSelf = 'center'
+        infoMessage.style.marginLeft = '10px'
+        buttonDiv.append(infoMessage)
     }
-    const infoMessage = document.createElement('span')
-    infoMessage.setAttribute('id', 'info-message')
-    infoMessage.innerHTML = message
-    infoMessage.style.color = color
-    infoMessage.style.fontSize = '14px'
-    infoMessage.style.alignSelf = 'center'
-    infoMessage.style.marginLeft = '10px'
-    buttonDiv.append(infoMessage)
+    hideTimeout = setTimeout(()=> {
+        const msg = document.querySelector('#info-message')
+        msg.classList.add('visually-hidden')
+    }, 3000)
 }
 
 function action(button) {
@@ -79,7 +85,6 @@ function action(button) {
                 button.classList.remove('disabled')
             }
             showInfo(data.success, data.message)
-
         })
         .then(error => console.log(error))
 }
