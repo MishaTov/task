@@ -13,6 +13,11 @@ from .user import User
 class Task(db.Model):
     __tablename__ = 'tasks'
 
+    STATUS_WAITING = 'Waiting for an assignment'
+    STATUS_PROGRESS = 'In progress'
+    STATUS_DONE = 'Done'
+    STATUS_FAILED = 'Missed the deadline'
+
     id = db.Column(db.Integer, primary_key=True)
     subject = db.Column(db.String(50), nullable=False)
     description = db.Column(db.Text)

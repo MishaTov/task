@@ -1,6 +1,6 @@
 from flask import make_response, request, jsonify
 from flask_login import login_required
-
+from datetime import datetime
 from src.models import Task
 from src.resourses.base import BaseResource
 
@@ -45,5 +45,10 @@ class AcceptReject(BaseResource):
 class CheckLabel(BaseResource):
     @staticmethod
     def get(task_uid):
-        task = Task.get_task(task_uid)
-
+        deadline, label, users = Task.get_task(task_uid, Task.deadline, Task.label, Task.users)
+        if datetime.utcnow() >= deadline and Task.label not in (Task.STATUS_DONE, Task.STATUS_FAILED):
+            TaskDescription.patch(task_uid, label=Task.STATUS_FAILED)
+        elif not users and Task.label not in (Task.STATUS_WAITING, Task.STATUS_DONE, Task.STATUS_FAILED):
+            TaskDescription.patch(task_uid, label=Task.STATUS_WAITING)
+        elif users and Task.label not in (Task.STATUS_PROGRESS, Task.STATUS_DONE, Task.STATUS_FAILED):
+            TaskDescription.patch(task_uid, label=Task.STATUS_PROGRESS)
