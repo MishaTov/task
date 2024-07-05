@@ -1,9 +1,7 @@
 const acceptButton = document.querySelector('#accept-task');
 const rejectButton = document.querySelector('#reject-task');
 const buttonDiv = document.querySelector('#accept-reject-button')
-const url = buttonDiv.getAttribute('url')
-const user = document.querySelector('#accept-reject-button').getAttribute('cur_user')
-const taskUid = document.querySelector('#accept-reject-button').getAttribute('task_uid')
+const user = buttonDiv.getAttribute('cur_user')
 const users = document.querySelector('#assigned-users')
 let hideTimeout
 
@@ -56,7 +54,7 @@ function showInfo(success, message) {
         infoMessage.style.marginLeft = '10px'
         buttonDiv.append(infoMessage)
     }
-    hideTimeout = setTimeout(()=> {
+    hideTimeout = setTimeout(() => {
         const msg = document.querySelector('#info-message')
         msg.classList.add('visually-hidden')
     }, 3000)
@@ -65,6 +63,8 @@ function showInfo(success, message) {
 function action(button) {
     button.classList.add('disabled')
     const requestMethod = button === acceptButton ? 'POST' : 'DELETE'
+    const url = buttonDiv.getAttribute('url')
+    const taskUid = buttonDiv.getAttribute('task_uid')
     fetch(url, {
         method: requestMethod,
         headers: {
@@ -77,7 +77,6 @@ function action(button) {
             if (data.success) {
                 if (button === acceptButton) {
                     accept()
-
                 } else {
                     reject()
                 }
