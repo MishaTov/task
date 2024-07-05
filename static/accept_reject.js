@@ -6,7 +6,7 @@ const users = document.querySelector('#assigned-users')
 let hideTimeout
 
 function buildLink(username) {
-    return `<a href="/profile/${username}">${username}</a>`
+    return `<a class="link-underline link-underline-opacity-0" href="/profile/${username}">${username}</a>`
 }
 
 function accept() {

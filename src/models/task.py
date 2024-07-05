@@ -38,8 +38,10 @@ class Task(db.Model):
         self.user_limit = fields.get('user_limit')
 
     @staticmethod
-    def get_task(uid):
-        return db.session.query(Task).filter_by(uid=uid).first()
+    def get_task(uid, *entities):
+        if not entities:
+            return db.session.query(Task).filter_by(uid=uid).first()
+        return db.session.query(Task).with_entities(*entities).filter_by(uid=uid).first()
 
     @staticmethod
     def create_task(subject, description, deadline, user_limit, files):

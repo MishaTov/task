@@ -40,3 +40,10 @@ class AcceptReject(BaseResource):
         task_id = data.get('task_uid')
         result = Task.reject(username, task_id)
         return jsonify(result)
+
+
+class CheckLabel(BaseResource):
+    @staticmethod
+    def get(task_uid):
+        task = Task.get_task(task_uid)
+
