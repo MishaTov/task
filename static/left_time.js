@@ -1,5 +1,5 @@
 function updateTimeLeft() {
-    const timeLeftElements = document.querySelectorAll('.time-left');
+    const timeLeftElements = document.querySelectorAll('#time-left');
     timeLeftElements.forEach(el => {
         const deadline = new Date(el.getAttribute('data-deadline'));
         const now = new Date();

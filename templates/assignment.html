@@ -40,7 +40,7 @@
     <div class="position-relative" style="bottom: 0px">
     <span class="fw-bold">Due to:</span> {{ task.deadline.strftime('%d %B %Y %H:%M') }}
     <br>
-    <span class="fw-bold">Time remaining:</span> <span class="time-left" data-deadline="{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%S') }}"></span>
+    <span class="fw-bold">Time remaining:</span> <span data-deadline="{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%S') }}" id="time-left"></span>
     </div>
     </div>
 </div>

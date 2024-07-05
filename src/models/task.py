@@ -13,6 +13,11 @@ from .user import User
 class Task(db.Model):
     __tablename__ = 'tasks'
 
+    STATUS_WAITING = 'Waiting for an assignment'
+    STATUS_PROGRESS = 'In progress'
+    STATUS_DONE = 'Done'
+    STATUS_FAILED = 'Missed the deadline'
+
     id = db.Column(db.Integer, primary_key=True)
     subject = db.Column(db.String(50), nullable=False)
     description = db.Column(db.Text)
@@ -38,8 +43,10 @@ class Task(db.Model):
         self.user_limit = fields.get('user_limit')
 
     @staticmethod
-    def get_task(uid):
-        return db.session.query(Task).filter_by(uid=uid).first()
+    def get_task(uid, *entities):
+        if not entities:
+            return db.session.query(Task).filter_by(uid=uid).first()
+        return db.session.query(Task).with_entities(*entities).filter_by(uid=uid).first()
 
     @staticmethod
     def create_task(subject, description, deadline, user_limit, files):
@@ -75,6 +82,7 @@ class Task(db.Model):
         task.current_user_number += 1
         db.session.commit()
         return {'success': True,
+                'users': list(map(lambda x: x.username, task.users)),
                 'message': f'Task is assigned to user {username}'}
 
     @staticmethod
@@ -92,11 +100,13 @@ class Task(db.Model):
         task.current_user_number -= 1
         db.session.commit()
         return {'success': True,
+                'users': list(map(lambda x: x.username, task.users)),
                 'message': f'User {username} is no longer assigned to this task'}
 
     def __repr__(self):
         return (f'Task({self.id}, \n'
                 f'{self.subject}, \n'
+                f'{self.description} \n'
                 f'{self.created.strftime("%d %B %Y %H:%M:%S")}, \n'
                 f'{self.deadline.strftime("%d %B %Y %H:%M:%S")}, \n'
                 f'{self.created_by}, \n'

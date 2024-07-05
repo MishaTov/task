@@ -1,6 +1,6 @@
 from flask import make_response, request, jsonify
 from flask_login import login_required
-
+from datetime import datetime
 from src.models import Task
 from src.resourses.base import BaseResource
 
@@ -16,9 +16,15 @@ class TaskDescription(BaseResource):
                        'Missed the deadline': '#FF0000'}
         return make_response(self.render_template('task.html', color=color_label, task=task))
 
+    @staticmethod
+    def patch(task_uid, **fields):
+        task = Task.get_task(task_uid)
+        for attr, value in fields.items():
+            if hasattr(task, attr):
+                setattr(task, attr, value)
+
 
 class AcceptReject(BaseResource):
-
     @staticmethod
     def post(**kwargs):
         data = request.get_json()
@@ -34,3 +40,15 @@ class AcceptReject(BaseResource):
         task_id = data.get('task_uid')
         result = Task.reject(username, task_id)
         return jsonify(result)
+
+
+class CheckLabel(BaseResource):
+    @staticmethod
+    def get(task_uid):
+        deadline, label, users = Task.get_task(task_uid, Task.deadline, Task.label, Task.users)
+        if datetime.utcnow() >= deadline and Task.label not in (Task.STATUS_DONE, Task.STATUS_FAILED):
+            TaskDescription.patch(task_uid, label=Task.STATUS_FAILED)
+        elif not users and Task.label not in (Task.STATUS_WAITING, Task.STATUS_DONE, Task.STATUS_FAILED):
+            TaskDescription.patch(task_uid, label=Task.STATUS_WAITING)
+        elif users and Task.label not in (Task.STATUS_PROGRESS, Task.STATUS_DONE, Task.STATUS_FAILED):
+            TaskDescription.patch(task_uid, label=Task.STATUS_PROGRESS)
