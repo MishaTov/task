@@ -30,7 +30,7 @@ function reject() {
     usernames.splice(usernames.indexOf(user), 1)
     usernames = usernames.join(', &nbsp').trim()
     if (usernames) {
-        users.innerHTML = 'Assigned to: &nbsp' + usernames.join(', &nbsp')
+        users.innerHTML = 'Assigned to: &nbsp' + usernames
     } else {
         users.innerHTML = 'No one does this task'
     }
