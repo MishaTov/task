@@ -29,5 +29,4 @@ function checkLabel(){
         })
         .then(error => console.log(error))
 }
-//wqdq
 setInterval(checkLabel, 1000)

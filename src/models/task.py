@@ -48,7 +48,6 @@ class Task(db.Model):
         if columns:
             return query.with_entities(*columns).first()
         return query.first()
-        #wefwefwwewe
         # query = db.session.query(Task).filter(Task.uid == uid)
         # if Task.users in entities:
         #     query = query.join(user_task, Task.id == user_task.c.task_id).join(User, user_task.c.user_id == User.id)
