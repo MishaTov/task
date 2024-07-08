@@ -55,12 +55,16 @@ class CheckLabel(BaseResource):
     def get(task_uid):
         task = Task.get_task(task_uid, Task.deadline, Task.label)
         users = list(map(lambda x: x.username, User.get_task_assigned_users(task.id, User.username)))
-        if datetime.utcnow() >= task.deadline and task.label not in (Task.STATUS_DONE, Task.STATUS_FAILED):
-            TaskDescription.patch(task_uid, label=Task.STATUS_FAILED)
+        label = task.label
+        if datetime.now() >= task.deadline and task.label not in (Task.STATUS_DONE, Task.STATUS_FAILED):
+            label = Task.STATUS_FAILED
+            TaskDescription.patch(task_uid, label=label)
         elif not users and task.label not in (Task.STATUS_WAITING, Task.STATUS_DONE, Task.STATUS_FAILED):
-            TaskDescription.patch(task_uid, label=Task.STATUS_WAITING)
+            label = Task.STATUS_WAITING
+            TaskDescription.patch(task_uid, label=label)
         elif users and task.label not in (Task.STATUS_PROGRESS, Task.STATUS_DONE, Task.STATUS_FAILED):
-            TaskDescription.patch(task_uid, label=Task.STATUS_PROGRESS)
+            label = Task.STATUS_PROGRESS
+            TaskDescription.patch(task_uid, label=label)
         return jsonify({'users': users,
                         'label': task.label,
-                        'color': CheckLabel.color_label[task.label]})
+                        'color': CheckLabel.color_label[label]})

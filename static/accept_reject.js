@@ -13,27 +13,27 @@ function accept() {
     acceptButton.classList.add('visually-hidden')
     rejectButton.classList.remove('disabled')
     rejectButton.classList.remove('visually-hidden')
-    let usernames = Array.from(users.querySelectorAll('a')).map(x => buildLink(x.textContent))
-    if (usernames) {
-        usernames.push(buildLink(user))
-        users.innerHTML = 'Assigned to: &nbsp' + usernames.join(', &nbsp')
-    } else {
-        users.innerHTML = 'Assigned to: &nbsp' + buildLink(user)
-    }
+    // let usernames = Array.from(users.querySelectorAll('a')).map(x => buildLink(x.textContent))
+    // if (usernames) {
+    //     usernames.push(buildLink(user))
+    //     users.innerHTML = 'Assigned to: &nbsp' + usernames.join(', &nbsp')
+    // } else {
+    //     users.innerHTML = 'Assigned to: &nbsp' + buildLink(user)
+    // }
 }
 
 function reject() {
     rejectButton.classList.add('visually-hidden')
     acceptButton.classList.remove('disabled')
     acceptButton.classList.remove('visually-hidden')
-    let usernames = Array.from(users.querySelectorAll('a')).map(x => buildLink(x.textContent))
-    usernames.splice(usernames.indexOf(user), 1)
-    usernames = usernames.join(', &nbsp').trim()
-    if (usernames) {
-        users.innerHTML = 'Assigned to: &nbsp' + usernames
-    } else {
-        users.innerHTML = 'No one does this task'
-    }
+    // let usernames = Array.from(users.querySelectorAll('a')).map(x => buildLink(x.textContent))
+    // usernames.splice(usernames.indexOf(user), 1)
+    // usernames = usernames.join(', &nbsp').trim()
+    // if (usernames) {
+    //     users.innerHTML = 'Assigned to: &nbsp' + usernames
+    // } else {
+    //     users.innerHTML = 'No one does this task'
+    // }
 }
 
 function showInfo(success, message) {
@@ -76,9 +76,11 @@ function action(button) {
         .then(data => {
             if (data.success) {
                 if (button === acceptButton) {
-                    accept()
+                    acceptButton.classList.add('disabled')
+                    setTimeout(accept, 1000)
                 } else {
-                    reject()
+                    rejectButton.classList.add('disabled')
+                    setTimeout(reject, 1000)
                 }
             } else {
                 button.classList.remove('disabled')
