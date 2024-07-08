@@ -15,6 +15,10 @@ function checkLabel(){
     fetch(url)
         .then(response => response.json())
         .then(data => {
+            // console.log(data)
+            // console.log('color:', data.color)
+            // console.log('label:', data.label)
+            // console.log('users:', data.users)
             if (label.textContent !== data.label) {
                 label.textContent = data.label
                 color.listStyle.color = data.color

@@ -1,7 +1,9 @@
 from flask import make_response, request, jsonify
 from flask_login import login_required
 from datetime import datetime
-from src.models import Task
+
+from src import db
+from src.models import Task, User
 from src.resourses.base import BaseResource
 
 
@@ -21,6 +23,8 @@ class TaskDescription(BaseResource):
         for attr, value in fields.items():
             if hasattr(task, attr):
                 setattr(task, attr, value)
+        db.session.add(task)
+        db.session.commit()
 
 
 class AcceptReject(BaseResource):
@@ -46,15 +50,17 @@ class CheckLabel(BaseResource):
                    'In progress': '#FFD900',
                    'Done': '#32FF00',
                    'Missed the deadline': '#FF0000'}
+
     @staticmethod
     def get(task_uid):
-        deadline, label, users = Task.get_task(task_uid, Task.deadline, Task.label, Task.users)
-        if datetime.utcnow() >= deadline and Task.label not in (Task.STATUS_DONE, Task.STATUS_FAILED):
+        task = Task.get_task(task_uid, Task.deadline, Task.label)
+        users = list(map(lambda x: x.username, User.get_task_assigned_users(task.id, User.username)))
+        if datetime.utcnow() >= task.deadline and task.label not in (Task.STATUS_DONE, Task.STATUS_FAILED):
             TaskDescription.patch(task_uid, label=Task.STATUS_FAILED)
-        elif not users and Task.label not in (Task.STATUS_WAITING, Task.STATUS_DONE, Task.STATUS_FAILED):
+        elif not users and task.label not in (Task.STATUS_WAITING, Task.STATUS_DONE, Task.STATUS_FAILED):
             TaskDescription.patch(task_uid, label=Task.STATUS_WAITING)
-        elif users and Task.label not in (Task.STATUS_PROGRESS, Task.STATUS_DONE, Task.STATUS_FAILED):
+        elif users and task.label not in (Task.STATUS_PROGRESS, Task.STATUS_DONE, Task.STATUS_FAILED):
             TaskDescription.patch(task_uid, label=Task.STATUS_PROGRESS)
-        return jsonify({'users': list(map(lambda x: x.username, users)),
-                        'label': label,
-                        'color': CheckLabel.color_label[label]})
+        return jsonify({'users': users,
+                        'label': task.label,
+                        'color': CheckLabel.color_label[task.label]})

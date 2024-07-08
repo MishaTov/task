@@ -3,6 +3,7 @@ from uuid import uuid4
 
 from flask_login import current_user
 from sqlalchemy import desc
+from sqlalchemy.orm import load_only
 
 from src import db
 from .assotiation_tables import user_task
@@ -46,12 +47,8 @@ class Task(db.Model):
     def get_task(uid, *columns):
         query = db.session.query(Task).filter_by(uid=uid)
         if columns:
-            return query.with_entities(*columns).first()
+            return query.options(load_only(*columns)).first()
         return query.first()
-        # query = db.session.query(Task).filter(Task.uid == uid)
-        # if Task.users in entities:
-        #     query = query.join(user_task, Task.id == user_task.c.task_id).join(User, user_task.c.user_id == User.id)
-        # return query.with_entities(*entities).first()
 
     @staticmethod
     def create_task(subject, description, deadline, user_limit, files):

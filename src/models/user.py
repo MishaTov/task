@@ -1,4 +1,5 @@
 from flask_login import UserMixin
+from sqlalchemy.orm import load_only
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from src import db
@@ -46,6 +47,13 @@ class User(db.Model, UserMixin):
     @staticmethod
     def get_user(username):
         return db.session.query(User).filter_by(username=username).first()
+
+    @staticmethod
+    def get_task_assigned_users(task_id, *columns):
+        query = db.session.query(User).join(user_task).filter(user_task.c.task_id == task_id)
+        if not columns:
+            return query.all()
+        return query.options(load_only(*columns)).all()
 
     def __repr__(self):
         return f'User({self.id}, {self.name}, {self.surname}, {self.username})'
