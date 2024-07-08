@@ -25,3 +25,4 @@ api.add_resource(TaskDescription, '/assignment/<task_uid>', strict_slashes=False
 api.add_resource(DownloadFile, '/assignment/download/<file_uid>', strict_slashes=False)
 api.add_resource(AcceptReject, '/assignment/<task_uid>/action', strict_slashes=False)
 api.add_resource(CheckLabel, '/label/<task_uid>', strict_slashes=False)
+#sfvm;vw
