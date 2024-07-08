@@ -43,10 +43,15 @@ class Task(db.Model):
         self.user_limit = fields.get('user_limit')
 
     @staticmethod
-    def get_task(uid, *entities):
-        if not entities:
-            return db.session.query(Task).filter_by(uid=uid).first()
-        return db.session.query(Task).with_entities(*entities).filter_by(uid=uid).first()
+    def get_task(uid, *columns):
+        query = db.session.query(Task).filter_by(uid=uid)
+        if columns:
+            return query.with_entities(*columns).first()
+        return query.first()
+        # query = db.session.query(Task).filter(Task.uid == uid)
+        # if Task.users in entities:
+        #     query = query.join(user_task, Task.id == user_task.c.task_id).join(User, user_task.c.user_id == User.id)
+        # return query.with_entities(*entities).first()
 
     @staticmethod
     def create_task(subject, description, deadline, user_limit, files):
@@ -104,12 +109,12 @@ class Task(db.Model):
                 'message': f'User {username} is no longer assigned to this task'}
 
     def __repr__(self):
-        return (f'Task({self.id}, \n'
-                f'{self.subject}, \n'
-                f'{self.description} \n'
-                f'{self.created.strftime("%d %B %Y %H:%M:%S")}, \n'
-                f'{self.deadline.strftime("%d %B %Y %H:%M:%S")}, \n'
-                f'{self.created_by}, \n'
-                f'{self.user_limit}, \n'
-                f'{self.label}, \n'
+        return (f'Task({self.id}, '
+                f'{self.subject}, '
+                f'{self.description} '
+                f'{self.created.strftime("%d %B %Y %H:%M:%S")}, '
+                f'{self.deadline.strftime("%d %B %Y %H:%M:%S")}, '
+                f'{self.created_by}, '
+                f'{self.user_limit}, '
+                f'{self.label}, '
                 f'{list(map(lambda x: (x.filename, x.data), self.files))})\n')

@@ -6,7 +6,6 @@ from src.resourses.base import BaseResource
 
 
 class TaskDescription(BaseResource):
-
     @login_required
     def get(self, task_uid):
         task = Task.get_task(task_uid)
@@ -43,6 +42,10 @@ class AcceptReject(BaseResource):
 
 
 class CheckLabel(BaseResource):
+    color_label = {'Waiting for an assignment': '#00FFD8',
+                   'In progress': '#FFD900',
+                   'Done': '#32FF00',
+                   'Missed the deadline': '#FF0000'}
     @staticmethod
     def get(task_uid):
         deadline, label, users = Task.get_task(task_uid, Task.deadline, Task.label, Task.users)
@@ -52,3 +55,6 @@ class CheckLabel(BaseResource):
             TaskDescription.patch(task_uid, label=Task.STATUS_WAITING)
         elif users and Task.label not in (Task.STATUS_PROGRESS, Task.STATUS_DONE, Task.STATUS_FAILED):
             TaskDescription.patch(task_uid, label=Task.STATUS_PROGRESS)
+        return jsonify({'users': list(map(lambda x: x.username, users)),
+                        'label': label,
+                        'color': CheckLabel.color_label[label]})
