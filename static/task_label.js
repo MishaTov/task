@@ -17,10 +17,8 @@ function checkLabel() {
             }
             if (usernames.length && !data.users.length) {
                 users.innerHTML = 'No one does this task'
-                color.style.color = data.color
             } else if ((!usernames.length && data.users.length) || (!usernames.every(username => data.users.includes(username)) && data.users)) {
                 users.innerHTML = 'Assigned to: &nbsp' + data.users.map(x => buildLink(x)).join(', &nbsp')
-                color.style.color = data.color
             }
         })
         .catch(error => console.log(error))
