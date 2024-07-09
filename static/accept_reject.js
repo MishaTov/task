@@ -2,12 +2,8 @@ const acceptButton = document.querySelector('#accept-task');
 const rejectButton = document.querySelector('#reject-task');
 const buttonDiv = document.querySelector('#accept-reject-button')
 const user = buttonDiv.getAttribute('cur_user')
-const users = document.querySelector('#assigned-users')
 let hideTimeout
 
-function buildLink(username) {
-    return `<a class="link-underline link-underline-opacity-0" href="/profile/${username}">${username}</a>`
-}
 
 function accept() {
     acceptButton.classList.add('visually-hidden')
@@ -72,7 +68,7 @@ function action(button) {
             }
             showInfo(data.success, data.message)
         })
-        .then(error => console.log(error))
+        .catch(error => console.log(error))
 }
 
 acceptButton.addEventListener('click', () => action(acceptButton))

@@ -6,7 +6,9 @@
 <div class="p-4">
     <div class="d-flex">
         <h1>{{ task.subject }}</h1>
-        <button type="button" class="btn btn-secondary btn-sm align-self-center" style="height: 30px; margin: 0px 0px 0px 10px" id="edit-task">Edit task</button>
+        {% if current_user.username == task.created_by %}
+            <button type="button" class="btn btn-secondary btn-sm align-self-center" style="height: 30px; margin: 0px 0px 0px 10px" id="edit-task">Edit task</button>
+        {% endif %}
     </div>
     <div class="position-relative top-0 end-0 d-flex">
         <div class="position-relative" id="task-label">{{ task.label }}</div>

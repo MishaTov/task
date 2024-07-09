@@ -27,17 +27,17 @@
 <br>
 <div class="position-relative w-50">
 {% for task in tasks %}
-<a href="{{ url_for('taskdescription', task_uid=task.uid) }}" style="text-decoration: none; color: inherit;">
+<a href="{{ url_for('taskdescription', task_uid=task.uid) }}" style="text-decoration: none; color: inherit;" id="task-uid" task_uid="{{ task.uid }}">
 <div class="task-link m-2 p-2 position-relative">
     <div style="margin: 0px 0px 16px 0px;">
         <div class="fs-4 text-break lh-sm" style="margin: 20px 45px 0px 0px">{{ task.subject }}</div>
         <div class="position-absolute top-0 end-0 d-flex">
-        <div class="position-relative" style="right: 8px">{{ task.label }}</div>
-            <span class="fs-5 position-relative" style="color: {{ color[task.label] }}; top: -4px; right: 5px"> ● </span>
+        <div class="position-relative" style="right: 8px" id="task-label-{{ task.uid }}">{{ task.label }}</div>
+            <span class="fs-5 position-relative" style="color: {{ color[task.label] }}; top: -4px; right: 5px" id="color-label-{{ task.uid }}"> ● </span>
         </div>
     </div>
     <div class="position-relative">
-    <div class="position-relative" style="bottom: 0px">
+    <div class="position-relative" style="bottom: 0px" id="time-label-{{ task.uid }}" url="{{ url_for('checklabel', task_uid=task.uid) }}">
     <span class="fw-bold">Due to:</span> {{ task.deadline.strftime('%d %B %Y %H:%M') }}
     <br>
     <span class="fw-bold">Time remaining:</span> <span data-deadline="{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%S') }}" id="time-left"></span>
@@ -51,5 +51,6 @@
 
 
 <script src="{{ url_for('static', filename='left_time.js') }}"></script>
+<script src="{{ url_for('static', filename='assignment_label.js') }}"></script>
 
 {% endblock %}
