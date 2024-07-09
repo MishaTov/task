@@ -3,6 +3,7 @@ from flask_login import login_required
 from datetime import datetime
 
 from src import db
+from src.forms.task_form import TaskForm
 from src.models import Task, User
 from src.resourses.base import BaseResource
 
@@ -10,12 +11,13 @@ from src.resourses.base import BaseResource
 class TaskDescription(BaseResource):
     @login_required
     def get(self, task_uid):
+        form = TaskForm()
         task = Task.get_task(task_uid)
         color_label = {'Waiting for an assignment': '#00FFD8',
                        'In progress': '#FFD900',
                        'Done': '#32FF00',
                        'Missed the deadline': '#FF0000'}
-        return make_response(self.render_template('task.html', color=color_label, task=task))
+        return make_response(self.render_template('task.html', color=color_label, task=task, form=form))
 
     @staticmethod
     def patch(task_uid, **fields):
