@@ -1,6 +1,7 @@
-from flask import make_response, request, jsonify
-from flask_login import login_required
 from datetime import datetime
+
+from flask import make_response, request, jsonify, flash, url_for, redirect
+from flask_login import login_required
 
 from src import db
 from src.forms.task_form import TaskForm
@@ -27,6 +28,13 @@ class TaskDescription(BaseResource):
                 setattr(task, attr, value)
         db.session.add(task)
         db.session.commit()
+
+    @staticmethod
+    def delete(task_uid):
+        task = Task.get_task(task_uid, Task.subject)
+        subject = task.subject
+        task.delete()
+        return jsonify({'message': f'Task "{subject}" was deleted'})
 
 
 class AcceptReject(BaseResource):

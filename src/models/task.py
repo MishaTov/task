@@ -29,9 +29,9 @@ class Task(db.Model):
     uid = db.Column(db.String(36), unique=True)
     user_limit = db.Column(db.Integer, default=5)
     current_user_number = db.Column(db.Integer, default=0)
-    users = db.relationship('User', secondary=user_task, backref='tasks')
-    files = db.relationship('File', backref='task')
-    comments = db.relationship('Comment', backref='tasks')
+    users = db.relationship('User', secondary=user_task, backref='tasks', cascade='all, delete')
+    files = db.relationship('File', backref='task', cascade='all, delete, delete-orphan')
+    comments = db.relationship('Comment', backref='tasks', cascade='all, delete, delete-orphan')
 
     def __init__(self, **fields):
         self.subject = fields.get('subject')
@@ -66,13 +66,16 @@ class Task(db.Model):
         db.session.commit()
 
     @staticmethod
-    def get_all():
-        return db.session.query(Task).order_by(desc(Task.created)).all()
+    def get_all(*columns):
+        query = db.session.query(Task).order_by(desc(Task.created))
+        if columns:
+            return query.options(load_only(*columns)).all()
+        return query.all()
 
     @staticmethod
     def accept(username, task_uid):
-        user = User.get_user(username)
-        task = Task.get_task(task_uid)
+        user = User.get_user(username, User.task_limit, User.current_task_number)
+        task = Task.get_task(task_uid, Task.user_limit, Task.current_user_number)
         if user.current_task_number >= user.task_limit:
             return {'success': False,
                     'message': f'User {username} has the maximum number of tasks allowed'}
@@ -89,8 +92,8 @@ class Task(db.Model):
 
     @staticmethod
     def reject(username, task_uid):
-        user = User.get_user(username)
-        task = Task.get_task(task_uid)
+        user = User.get_user(username, User.task_limit, User.current_task_number)
+        task = Task.get_task(task_uid, Task.user_limit, Task.current_user_number)
         if user.current_task_number == 0:
             return {'success': False,
                     'message': f'User {username} has no assigned tasks'}
@@ -104,6 +107,10 @@ class Task(db.Model):
         return {'success': True,
                 'users': list(map(lambda x: x.username, task.users)),
                 'message': f'User {username} is no longer assigned to this task'}
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
 
     def __repr__(self):
         return (f'Task({self.id}, '

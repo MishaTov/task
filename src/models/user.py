@@ -29,7 +29,7 @@ class User(db.Model, UserMixin):
 
     @staticmethod
     def check_password(username, password):
-        current_password = User.get_user(username).password
+        current_password = User.get_user(username, User.password).password
         return check_password_hash(current_password, password)
 
     @staticmethod
@@ -45,15 +45,18 @@ class User(db.Model, UserMixin):
         return new_user
 
     @staticmethod
-    def get_user(username):
-        return db.session.query(User).filter_by(username=username).first()
+    def get_user(username, *columns):
+        query = db.session.query(User).filter_by(username=username)
+        if columns:
+            return query.options(load_only(*columns)).first()
+        return query.first()
 
     @staticmethod
     def get_task_assigned_users(task_id, *columns):
         query = db.session.query(User).join(user_task).filter(user_task.c.task_id == task_id)
-        if not columns:
-            return query.all()
-        return query.options(load_only(*columns)).all()
+        if columns:
+            return query.options(load_only(*columns)).all()
+        return query.all()
 
     def __repr__(self):
         return f'User({self.id}, {self.name}, {self.surname}, {self.username})'

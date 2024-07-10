@@ -2,18 +2,18 @@
 
 {% block content %}
     {{ super() }}
-<div class="p-4">
+<div class="p-4" id="task-info" description_url="{{ url_for('taskdescription', task_uid=task.uid) }}" assignment_url="{{ url_for('assignment') }}" task_uid="{{ task.uid }}">
     <form id="edit-task-form">
     {{ form.hidden_tag() }}
         <div class="d-flex">
             <h1 id="task-subject" class="text-break">{{ task.subject }}</h1>
             {% if current_user.username == task.created_by %}
                 <h1><span class="visually-hidden" id="edit-task-subject">{{ form.subject(value=task.subject, style='border: none; border-bottom: 2px solid blue; outline: none; width: auto', id="form-subject") }}</span></h1>
-                <button type="button" class="align-self-center p-0" id="edit-task" style="background-color: white; border: none; margin: 0px 0px 0px 25px">
-                    <img src="{{ url_for('static', filename='img/edit.png') }}" alt="Edit task" style="height: 30px; width: 30px">
+                <button type="button" class="align-self-center p-0" id="edit-task" style="background-color: white; border: none; margin: 0px 0px 0px 35px">
+                    <img src="{{ url_for('static', filename='img/edit.png') }}" alt="Edit task" style="height: 20px; width: 20px">
                 </button>
-                <button type="button" class="align-self-center p-0" id="delete-task" style="background-color: white; border: none; margin: 0px 0px 0px 5px">
-                    <img src="{{ url_for('static', filename='img/delete.png') }}" alt="Delete task" style="height: 30px; width: 30px">
+                <button type="button" class="align-self-center p-0" id="delete-task" style="background-color: white; border: none; margin: 0px 0px 0px 10px">
+                    <img src="{{ url_for('static', filename='img/delete.png') }}" alt="Delete task" style="height: 20px; width: 20px">
                 </button>
             {% endif %}
         </div>
@@ -27,7 +27,7 @@
         <br>
         <span class="fw-bold">Time remaining:</span> <span data-deadline="{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%S') }}" id="time-left"></span>
         </div>
-        <div class="d-inline-flex" id="accept-reject-button" url="{{ url_for('acceptreject', task_uid=task.uid) }}" cur_user="{{ current_user.username }}" task_uid="{{ task.uid }}">
+        <div class="d-inline-flex" id="accept-reject-button" url="{{ url_for('acceptreject', task_uid=task.uid) }}" cur_user="{{ current_user.username }}">
             {% if current_user in task.users %}
                 <button type="button" class="btn btn-primary visually-hidden" id="accept-task" style="margin-top: 5px; padding-top: 3px; padding-bottom: 3px; width: 80px; text-align: center">Accept</button>
                 <button type="button" class="btn btn-danger" id="reject-task" style="margin-top: 5px; padding-top: 3px; padding-bottom: 3px; width: 80px; text-align: center">Reject</button>
@@ -65,7 +65,7 @@
 <script src="{{ url_for('static', filename='left_time.js') }}"></script>
 <script src="{{ url_for('static', filename='accept_reject.js') }}"></script>
 <script src="{{ url_for('static', filename='task_label.js') }}"></script>
-<script src="{{ url_for('static', filename='edit_task.js') }}"></script>
+<script src="{{ url_for('static', filename='edit_delete_task.js') }}"></script>
 
 
 {% endblock %}

@@ -18,7 +18,7 @@ class Assignment(BaseResource):
 
     @login_required
     def get(self):
-        tasks = Task.get_all()
+        tasks = Task.get_all(Task.uid, Task.subject, Task.label, Task.deadline)
         color_label = {'Waiting for an assignment': '#00FFD8',
                        'In progress': '#FFD900',
                        'Done': '#32FF00',

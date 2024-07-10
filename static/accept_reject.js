@@ -45,7 +45,7 @@ function action(button) {
     button.classList.add('disabled')
     const requestMethod = button === acceptButton ? 'POST' : 'DELETE'
     const url = buttonDiv.getAttribute('url')
-    const taskUid = buttonDiv.getAttribute('task_uid')
+    const taskUid = document.querySelector('#task-info').getAttribute('task_uid')
     fetch(url, {
         method: requestMethod,
         headers: {

@@ -18,14 +18,13 @@
 }
 </style>
 
-<div class="p-4">
-
-<div class="position-relative d-flex">
+<div class="p-4" id="page-div">
+<div class="position-relative d-flex" id="title">
 <h1>{{ title }}</h1>
 <a class="btn btn-primary m-2 p-1 align-self-center" style="font-size: 15px; height: 33px;" href="{{ url_for('createtask') }}" role="button">+ Create task</a>
 </div>
 <br>
-<div class="position-relative w-50">
+<div class="position-relative w-50" id="tasks">
 {% for task in tasks %}
 <a href="{{ url_for('taskdescription', task_uid=task.uid) }}" style="text-decoration: none; color: inherit;" id="task-uid" task_uid="{{ task.uid }}">
 <div class="task-link m-2 p-2 position-relative">
@@ -49,7 +48,7 @@
 </div>
 </div>
 
-
+<script src="{{ url_for('static', filename='deleted_task.js') }}"></script>
 <script src="{{ url_for('static', filename='left_time.js') }}"></script>
 <script src="{{ url_for('static', filename='assignment_label.js') }}"></script>
 
