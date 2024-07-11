@@ -1,25 +1,51 @@
 const editButton = document.querySelector('#edit-task')
-const deletebutton = document.querySelector('#delete-task')
+const deleteButton = document.querySelector('#delete-task')
+const saveChangesButton = document.querySelector('#save-changes')
+const cancelChangesButton = document.querySelector('#cancel-changes')
 const editForm = document.querySelector('#edit-task-form')
+const acceptRejectEl = document.querySelector('#accept-reject-button')
 
 
 function resizeField() {
-    this.style.width = this.value.length + 'ch'
+    this.style.width = `${this.textContent.length}`
+    this.style.width = this.scrollWidth + 'px'
 }
-
 
 function editSubject() {
     const subject = editForm.querySelector('#task-subject')
-    const editSubject = editForm.querySelector('#edit-task-subject')
     const formSubject = editForm.querySelector('#form-subject')
-    subject.classList.add('visually-hidden')
-    editSubject.classList.remove('visually-hidden')
+    formSubject.style.border = 'none'
+    formSubject.style.borderBottom = '2px solid blue'
+    formSubject.style.outline = 'none'
+    formSubject.style.width = formSubject.scrollWidth +'px'
+    formSubject.style.padding = '0px'
     formSubject.addEventListener('input', resizeField)
-    resizeField.call(formSubject)
+    subject.classList.add('visually-hidden')
+    formSubject.classList.remove('visually-hidden')
+}
+
+function editDescription(){
+    const description = editForm.querySelector('#task-description')
+    description.setAttribute('contenteditable', 'true')
+    description.style.border = 'none'
+    description.style.borderBottom = '2px solid blue'
+    description.style.outline = 'none'
+    description.style.padding = '0px'
+}
+
+function editDeadline(){
+    const deadline = editForm.querySelector('#task-deadline')
+    const formDeadline = editForm.querySelector('#form-deadline')
+    deadline.classList.add('visually-hidden')
+    formDeadline.classList.remove('visually-hidden')
 }
 
 function editTask() {
+    acceptRejectEl.classList.add('visually-hidden')
+    showEditButtons()
     editSubject()
+    editDescription()
+    editDeadline()
 }
 
 
@@ -45,5 +71,32 @@ function deleteTask() {
 
 }
 
+
+function saveChanges(){
+    hideEditButtons()
+    acceptRejectEl.classList.remove('visually-hidden')
+}
+
+function cancelChanges(){
+    hideEditButtons()
+    acceptRejectEl.classList.remove('visually-hidden')
+}
+
+function showEditButtons(){
+    editButton.classList.add('visually-hidden')
+    deleteButton.classList.add('visually-hidden')
+    saveChangesButton.classList.remove('visually-hidden')
+    cancelChangesButton.classList.remove('visually-hidden')
+}
+
+function hideEditButtons(){
+    saveChangesButton.classList.add('visually-hidden')
+    cancelChangesButton.classList.add('visually-hidden')
+    editButton.classList.remove('visually-hidden')
+    deleteButton.classList.remove('visually-hidden')
+}
+
 editButton.addEventListener('click', editTask)
-deletebutton.addEventListener('click', deleteTask)
+deleteButton.addEventListener('click', deleteTask)
+saveChangesButton.addEventListener('click', saveChanges)
+cancelChangesButton.addEventListener('click', cancelChanges)

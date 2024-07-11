@@ -29,7 +29,7 @@ class Task(db.Model):
     uid = db.Column(db.String(36), unique=True)
     user_limit = db.Column(db.Integer, default=5)
     current_user_number = db.Column(db.Integer, default=0)
-    users = db.relationship('User', secondary=user_task, backref='tasks', cascade='all, delete')
+    users = db.relationship('User', secondary=user_task, backref='tasks')
     files = db.relationship('File', backref='task', cascade='all, delete, delete-orphan')
     comments = db.relationship('Comment', backref='tasks', cascade='all, delete, delete-orphan')
 
