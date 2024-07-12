@@ -26,12 +26,14 @@ class TaskDescription(BaseResource):
         for attr, value in fields.items():
             if hasattr(task, attr):
                 setattr(task, attr, value)
-        db.session.add(task)
         db.session.commit()
 
     @staticmethod
     def delete(task_uid):
         task = Task.get_task(task_uid, Task.subject)
+        for user in task.users:
+            user.current_task_number -= 1
+            User.update_user_info(user.username, current_task_number=user.current_task_number)
         subject = task.subject
         task.delete()
         return jsonify({'message': f'Task "{subject}" was deleted'})

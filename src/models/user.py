@@ -58,6 +58,14 @@ class User(db.Model, UserMixin):
             return query.options(load_only(*columns)).all()
         return query.all()
 
+    @staticmethod
+    def update_user_info(username, **fields):
+        user = User.get_user(username)
+        for attr, value in fields.items():
+            if hasattr(user, attr):
+                setattr(user, attr, value)
+        db.session.commit()
+
     def __repr__(self):
         return f'User({self.id}, {self.name}, {self.surname}, {self.username})'
 
