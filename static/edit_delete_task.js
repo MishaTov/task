@@ -22,6 +22,12 @@ function editSubject() {
     formSubject.addEventListener('input', resizeField)
     subject.classList.add('visually-hidden')
     formSubject.classList.remove('visually-hidden')
+    return [subject, formSubject]
+}
+
+function cancelSubject(subject, formSubject){
+    formSubject.classList.add('visually-hidden')
+    subject.classList.remove('visually-hidden')
 }
 
 function editDescription(){
@@ -31,6 +37,11 @@ function editDescription(){
     description.style.borderBottom = '2px solid blue'
     description.style.outline = 'none'
     description.style.padding = '0px'
+    return description
+}
+
+function cancelDescription(description){
+    description.removeAttribute('contenteditable')
 }
 
 function editDeadline(){
@@ -38,14 +49,31 @@ function editDeadline(){
     const formDeadline = editForm.querySelector('#form-deadline')
     deadline.classList.add('visually-hidden')
     formDeadline.classList.remove('visually-hidden')
+    return [deadline, formDeadline]
+}
+
+function cancelDeadline(deadline, formDeadline){
+    formDeadline.classList.add('visually-hidden')
+    deadline.classList.remove('visually-hidden')
+}
+
+function editAttachments(){
+    const formFiles = editForm.querySelector('#form-files')
+    formFiles.classList.remove('visually-hidden')
+    return formFiles
+}
+
+function cancelAttachments(formAttachments){
+    formAttachments.classList.add('visually-hidden')
 }
 
 function editTask() {
     acceptRejectEl.classList.add('visually-hidden')
-    showEditButtons()
     editSubject()
     editDescription()
     editDeadline()
+    editAttachments()
+    showEditButtons()
 }
 
 
@@ -71,15 +99,16 @@ function deleteTask() {
 
 }
 
-
 function saveChanges(){
-    hideEditButtons()
-    acceptRejectEl.classList.remove('visually-hidden')
+    cancelChanges()
 }
 
 function cancelChanges(){
+    cancelSubject(editSubject()[0], editSubject()[1])
+    cancelDescription(editDescription())
+    cancelDeadline(editDeadline()[0], editDeadline()[1])
+    cancelAttachments(editAttachments())
     hideEditButtons()
-    acceptRejectEl.classList.remove('visually-hidden')
 }
 
 function showEditButtons(){
