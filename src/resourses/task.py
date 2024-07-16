@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from flask import make_response, request, jsonify, flash, url_for, redirect
+from flask import make_response, request, jsonify
 from flask_login import login_required
 
 from src import db
@@ -22,16 +22,22 @@ class TaskDescription(BaseResource):
 
     @staticmethod
     def patch(task_uid, **fields):
-        task = Task.get_task(task_uid)
-        for attr, value in fields.items():
-            if hasattr(task, attr):
-                setattr(task, attr, value)
-        db.session.add(task)
-        db.session.commit()
+        print(task_uid)
+        # task = Task.get_task(data.get('task_uid'), Task.id)
+        # for attr, value in fields.items():
+        #     if hasattr(task, attr) and attr != 'files':
+        #         setattr(task, attr, value)
+        #     elif attr == 'files':
+        #         Task.add_files(fields['files'], task)
+        # db.session.commit()
+        # return jsonify({'success': True})
 
     @staticmethod
     def delete(task_uid):
         task = Task.get_task(task_uid, Task.subject)
+        for user in task.users:
+            user.current_task_number -= 1
+            User.update_user_info(user.username, current_task_number=user.current_task_number)
         subject = task.subject
         task.delete()
         return jsonify({'message': f'Task "{subject}" was deleted'})

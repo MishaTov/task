@@ -59,11 +59,18 @@ class Task(db.Model):
             user_limit=user_limit
         )
         if files:
-            files_ = File.upload(files, new_task.id)
-            for file in files_:
-                new_task.files.append(file)
+            Task.add_files(files, new_task)
+            # files_ = File.upload(files, new_task.id)
+            # for file in files_:
+            #     new_task.files.append(file)
         db.session.add(new_task)
         db.session.commit()
+
+    @staticmethod
+    def add_files(files, task):
+        files_ = File.upload(files, task.id)
+        for file in files_:
+            task.files.append(file)
 
     @staticmethod
     def get_all(*columns):
