@@ -69,6 +69,11 @@
         </div>
             {{ form.files(class='visually-hidden form-control form-control-sm', style='width: 205px; margin-top: 10px', id='form-attachments') }}
         </div>
+        <br>
+        <div class="visually-hidden" id="task-user-limit" user_limit="{{ task.user_limit }}">
+            <p class="h3">Max count of workers for this task:<output id="user-count"></output></p>
+            {{ form.user_limit(value=task.user_limit, class='form-range', style='width: 300px', id='user-limit') }}
+        </div>
         <p class="mt-5"><span class="fw-bold">Created:</span> {{ task.created.strftime('%d %B %Y') }} by <a class="link-underline link-underline-opacity-0" href="{{ url_for('profile', username=task.created_by) }}">{{ task.created_by }}</a></p>
     </form>
 </div>

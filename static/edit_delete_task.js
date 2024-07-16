@@ -17,6 +17,9 @@ const deadline = editForm.querySelector('#task-deadline')
 const formDeadline = editForm.querySelector('#form-deadline')
 //const attachments = editForm.querySelector('#task-attachments')
 const formAttachments = editForm.querySelector('#form-attachments')
+const userLimitEl = editForm.querySelector('#task-user-limit')
+const userLimit = userLimitEl.getAttribute('user_limit')
+const formUserLimit = editForm.querySelector('#user-limit')
 
 
 function resizeField() {
@@ -53,6 +56,16 @@ function editAttachments() {
     formAttachments.classList.remove('visually-hidden')
 }
 
+function editUserLimit(){
+    userLimitEl.classList.remove('visually-hidden')
+    const input = document.querySelector("#user-limit")
+    const value = document.querySelector("#user-count")
+    value.textContent = input.value
+    input.addEventListener("input", (event) => {
+        value.textContent = event.target.value
+    })
+}
+
 function cancelEditSubject() {
     formSubject.classList.add('visually-hidden')
     subject.classList.remove('visually-hidden')
@@ -72,6 +85,10 @@ function cancelEditAttachments() {
     formAttachments.classList.add('visually-hidden')
 }
 
+function cancelEditUserLimit(){
+    userLimitEl.classList.add('visually-hidden')
+}
+
 function editTask() {
     acceptRejectEl.classList.add('visually-hidden')
     showEditButtons()
@@ -79,6 +96,7 @@ function editTask() {
     editDescription()
     editDeadline()
     editAttachments()
+    editUserLimit()
 }
 
 
@@ -104,29 +122,37 @@ function deleteTask() {
 
 
 function saveChanges() {
-    const data = {task_uid: taskUid}
+    const data = new FormData()
     if (subject.textContent !== formSubject.value) {
         subject.textContent = formSubject.value
-        data.subject = subject.textContent
+        data.append('subject', subject.textContent)
     }
     if (new Date(deadline.textContent).getTime() !== new Date(formDeadline.value).getTime()) {
         deadline.textContent = formDeadline.value
-        data.deadline = deadline.textContent
+        data.append('deadline', deadline.textContent)
     }
     if (currentDescription !== description.textContent) {
-        data.description = description.textContent
+        data.append('description', description.textContent)
     }
     if (formAttachments.files.length !== 0) {
-        data.files = formAttachments.files
+        for (let i = 0; i < formAttachments.files.length; i++) {
+            data.append('files', formAttachments.files[i])
+        }
     }
-    console.log(data)
-    console.log(JSON.stringify(data))
+    if (userLimit !== formUserLimit.value) {
+        data.append('user_limit', formUserLimit.value)
+    }
+    else{
+        data.append('user_limit', null)
+    }
+    console.log(taskUid)
+    // console.log(JSON.stringify(data))
     fetch(taskInfo.getAttribute('description_url'), {
         method: 'PATCH',
         headers: {
-            'Content-type': 'application/json'
+            'task_uid': taskUid
         },
-        body: JSON.stringify(data)
+        body: data
     })
         .then(response => response.json())
         .then(data => {
@@ -145,6 +171,7 @@ function cancelChanges() {
     cancelEditDeadline()
     cancelEditDescription()
     cancelEditAttachments()
+    cancelEditUserLimit()
     hideEditButtons()
     acceptRejectEl.classList.remove('visually-hidden')
 }

@@ -21,9 +21,14 @@ class TaskDescription(BaseResource):
         return make_response(self.render_template('task.html', color=color_label, task=task, form=form))
 
     @staticmethod
-    def patch(task_uid, **fields):
-        print(task_uid)
-        # task = Task.get_task(data.get('task_uid'), Task.id)
+    def patch(**kwargs):
+        form = TaskForm()
+        # for file in form.files.data:
+        #     print(file.filename)
+        # for file in files:
+        #     print(file.filename)
+        #     print(file.read())
+        # task = Task.get_task(task_uid, Task.id)
         # for attr, value in fields.items():
         #     if hasattr(task, attr) and attr != 'files':
         #         setattr(task, attr, value)

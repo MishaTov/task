@@ -115,6 +115,14 @@ class Task(db.Model):
                 'users': list(map(lambda x: x.username, task.users)),
                 'message': f'User {username} is no longer assigned to this task'}
 
+    @staticmethod
+    def update_task_info(task_uid, **fields):
+        task = Task.get_task(task_uid)
+        for attr, value in fields.items():
+            if hasattr(task, attr):
+                setattr(task, attr, value)
+        db.session.commit()
+
     def delete(self):
         db.session.delete(self)
         db.session.commit()
