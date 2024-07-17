@@ -22,13 +22,12 @@ function showTaskDelMessage(delMessage){
     const childDivHeader = document.createElement('div')
     childDivHeader.classList.add('toast-header')
 
-    const img = document.createElement('img')
-    img.src = 'static/img/del_task_label.png'
-    img.style.borderRadius = '25%'
-    img.style.height = '20px'
-    img.style.width = '20px'
-    img.style.marginRight = '5px'
-    img.alt = ''
+    const label = document.createElement('div')
+    label.style.backgroundColor = 'red'
+    label.style.borderRadius = '25%'
+    label.style.height = '20px'
+    label.style.width = '20px'
+    label.style.marginRight = '5px'
 
     const strong = document.createElement('strong')
     strong.classList.add('me-auto')
@@ -47,7 +46,7 @@ function showTaskDelMessage(delMessage){
     childDivBody.classList.add('toast-body')
     childDivBody.innerHTML = delMessage
 
-    childDivHeader.appendChild(img)
+    childDivHeader.appendChild(label)
     childDivHeader.appendChild(strong)
     childDivHeader.appendChild(small)
     childDivHeader.appendChild(closeButton)

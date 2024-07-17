@@ -95,7 +95,8 @@ class Task(db.Model):
         db.session.commit()
         return {'success': True,
                 'users': list(map(lambda x: x.username, task.users)),
-                'message': f'Task is assigned to user {username}'}
+                'message': f'Task is assigned to user {username}',
+                'action': 'Accept'}
 
     @staticmethod
     def reject(username, task_uid):
@@ -113,7 +114,8 @@ class Task(db.Model):
         db.session.commit()
         return {'success': True,
                 'users': list(map(lambda x: x.username, task.users)),
-                'message': f'User {username} is no longer assigned to this task'}
+                'message': f'User {username} is no longer assigned to this task',
+                'Action': 'Reject'}
 
     @staticmethod
     def update_task_info(task_uid, **fields):

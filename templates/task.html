@@ -3,18 +3,62 @@
 {% block content %}
     {{ super() }}
 <div class="p-4" id="task-info" description_url="{{ url_for('taskdescription', task_uid=task.uid) }}" assignment_url="{{ url_for('assignment') }}" task_uid="{{ task.uid }}">
-    <form id="edit-task-form">
-    {{ form.hidden_tag() }}
         <div class="d-flex">
             <h1 id="task-subject" class="text-break">{{ task.subject }}</h1>
             {% if current_user.username == task.created_by %}
-                {{ form.subject(value=task.subject, class='visually-hidden h1', id='form-subject') }}
-                <button type="button" class="align-self-center p-0" id="edit-task" style="background-color: white; border: none; margin: 0px 0px 0px 35px">
+                <button type="button" class="align-self-center p-0" data-bs-toggle="modal" data-bs-target="#edit-task-window" id="edit-task-button" style="background-color: white; border: none; margin: 0px 0px 0px 35px">
                     <img src="{{ url_for('static', filename='img/edit.png') }}" alt="Edit task" style="height: 20px; width: 20px">
                 </button>
-                <button type="button" class="align-self-center p-0" id="delete-task" style="background-color: white; border: none; margin: 0px 0px 0px 10px">
+                <button type="button" class="align-self-center p-0" data-bs-toggle="modal" data-bs-target="#confirm-delete-task-window" id="delete-task-button" style="background-color: white; border: none; margin: 0px 0px 0px 10px">
                     <img src="{{ url_for('static', filename='img/delete.png') }}" alt="Delete task" style="height: 20px; width: 20px">
                 </button>
+
+                <div class="modal" id="edit-task-window">
+                    <div class="modal-dialog modal-fullscreen">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-1">Edit task</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="edit-task-form">
+                                    {{ form.hidden_tag() }}
+                                    {{ form.subject(value=task.subject, id='form-subject') }}
+                                    {{ form.description(value=task.description, id='form-subject') }}
+                                    {{ form.files(class='form-control form-control-sm', style='width: 205px; margin-top: 10px', id='form-attachments') }}
+                                    {{ form.deadline(value=task.deadline, class='form-control', style='width: 205px', id='form-deadline') }}
+                                    <div id="task-user-limit" user_limit="{{ task.user_limit }}">
+                                        <p class="h3">Max count of workers for this task:<output id="user-count"></output></p>
+                                        {{ form.user_limit(value=task.user_limit, class='form-range', style='width: 300px', id='user-limit') }}
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal fade" id="confirm-delete-task-window">
+                    <div class="modal-dialog modal-dialog-centered">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5">Confirm deletion</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            </div>
+                            <div class="modal-body" style="font-size: 15px">
+                                This will delete the task permanently. You won't be able to restore it.
+                                <br>
+                                Are you sure you want to delete the task?
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-sm btn-danger" id="delete-task">Delete task</button>
+                                <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
                 <button type="button" class="btn btn-primary align-self-center p-0 visually-hidden" id="save-changes" style="margin: 0px 0px 0px 35px; width: 55px">
                     Save
@@ -31,7 +75,6 @@
         {#    <div class="position-relative">#}
         <div class="position-relative" style="bottom: 0px" id="time-label" url="{{ url_for('checklabel', task_uid=task.uid) }}">
         <span class="fw-bold">Due to:</span> <span id="task-deadline">{{ task.deadline.strftime('%d %B %Y %H:%M') }}</span>
-            {{ form.deadline(value=task.deadline, class='visually-hidden form-control', style='width: 205px', id='form-deadline') }}
         <br>
         <span class="fw-bold">Time remaining:</span> <span data-deadline="{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%S') }}" id="time-left"></span>
         </div>
@@ -43,6 +86,9 @@
                 <button type="button" class="btn btn-primary" id="accept-task" style="margin-top: 5px; padding-top: 3px; padding-bottom: 3px; width: 80px; text-align: center">Accept</button>
                 <button type="button" class="btn btn-danger visually-hidden" id="reject-task" style="margin-top: 5px; padding-top: 3px; padding-bottom: 3px; width: 80px; text-align: center">Reject</button>
             {% endif %}
+        </div>
+        <div class="toast-container position-absolute bottom-0 end-0 m-3" id="toast-messages-container">
+
         </div>
         <br>
         <span class="d-inline-flex" id="assigned-users" style="margin-top: 5px">
@@ -67,15 +113,9 @@
                 <a href="{{ url_for('downloadfile', file_uid=file.uid) }}" class="btn btn-outline-dark d-flex d-inline-flex" style="height: 30px; max-width: 150px; font-size: 14px; padding: 2px 5px; align-items: center">{{ file.filename }}</a>
             {% endfor %}
         </div>
-            {{ form.files(class='visually-hidden form-control form-control-sm', style='width: 205px; margin-top: 10px', id='form-attachments') }}
         </div>
         <br>
-        <div class="visually-hidden" id="task-user-limit" user_limit="{{ task.user_limit }}">
-            <p class="h3">Max count of workers for this task:<output id="user-count"></output></p>
-            {{ form.user_limit(value=task.user_limit, class='form-range', style='width: 300px', id='user-limit') }}
-        </div>
         <p class="mt-5"><span class="fw-bold">Created:</span> {{ task.created.strftime('%d %B %Y') }} by <a class="link-underline link-underline-opacity-0" href="{{ url_for('profile', username=task.created_by) }}">{{ task.created_by }}</a></p>
-    </form>
 </div>
 
 <script src="{{ url_for('static', filename='left_time.js') }}"></script>

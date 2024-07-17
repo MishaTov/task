@@ -17,28 +17,31 @@ function reject() {
     acceptButton.classList.remove('visually-hidden')
 }
 
-function showInfo(success, message) {
-    clearTimeout(hideTimeout)
-    const color = success ? 'green' : 'red'
-    const msg = document.querySelector('#info-message')
-    if (msg) {
-        msg.innerHTML = message
-        msg.style.color = color
-        msg.classList.remove('visually-hidden')
+function showInfo(success, message, action) {
+    const toastContainer = document.querySelector('#toast-messages-container')
+    let color, headerText
+    if (success) {
+        color = action === 'Accept' ? '#9eff00': '#ff006d'
+        headerText = action === 'Accept' ? 'Task accepted' : 'Task rejected'
     } else {
-        const infoMessage = document.createElement('span')
-        infoMessage.setAttribute('id', 'info-message')
-        infoMessage.innerHTML = message
-        infoMessage.style.color = color
-        infoMessage.style.fontSize = '14px'
-        infoMessage.style.alignSelf = 'center'
-        infoMessage.style.marginLeft = '10px'
-        buttonDiv.append(infoMessage)
+        color = 'red'
+        headerText = 'Something went wrong'
     }
-    hideTimeout = setTimeout(() => {
-        const msg = document.querySelector('#info-message')
-        msg.classList.add('visually-hidden')
-    }, 3000)
+    const toastEl = `<div class="toast" role="alert" aria-live="assertive" aria-atomic="true">
+                                <div class="toast-header">
+                                    <div style="width: 20px; height: 20px; margin-right: 5px; background-color: ${color}; border-radius: 25%"></div>
+                                    <strong class="me-auto">${headerText}</strong>
+                                    <small>just now</small>
+                                    <button type="button" class="btn-close" data-bs-dismiss="toast" aria-label="Close"></button>
+                                </div>
+                                <div class="toast-body">${message}</div>
+                            </div>`
+    const temp = document.createElement('div')
+    temp.innerHTML = toastEl.trim()
+    const newToast = temp.firstChild
+    const toast = new bootstrap.Toast(newToast)
+    toastContainer.appendChild(newToast)
+    toast.show()
 }
 
 function action(button) {
@@ -66,7 +69,7 @@ function action(button) {
             } else {
                 button.classList.remove('disabled')
             }
-            showInfo(data.success, data.message)
+            showInfo(data.success, data.message, data.action)
         })
         .catch(error => console.log(error))
 }
