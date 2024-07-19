@@ -3,24 +3,24 @@ const taskInfo = document.querySelector('#task-info')
 const editButton = document.querySelector('#edit-task')
 const deleteButton = document.querySelector('#delete-task')
 const deleteTaskButton = document.querySelector('#delete-task-button')
-const saveChangesButton = document.querySelector('#save-changes')
-const cancelChangesButton = document.querySelector('#cancel-changes')
-const editForm = document.querySelector('#edit-task-form')
-const acceptRejectEl = document.querySelector('#accept-reject-button')
-
-
+// const saveChangesButton = document.querySelector('#save-changes')
+// const cancelChangesButton = document.querySelector('#cancel-changes')
+// const editForm = document.querySelector('#edit-task-form')
+// const acceptRejectEl = document.querySelector('#accept-reject-button')
+//
+//
 const taskUid = taskInfo.getAttribute('task_uid')
-const subject = editForm.querySelector('#task-subject')
-const formSubject = editForm.querySelector('#form-subject')
-const description = editForm.querySelector('#task-description')
-const currentDescription = description.textContent
-const deadline = editForm.querySelector('#task-deadline')
-const formDeadline = editForm.querySelector('#form-deadline')
-//const attachments = editForm.querySelector('#task-attachments')
-const formAttachments = editForm.querySelector('#form-attachments')
-const userLimitEl = editForm.querySelector('#task-user-limit')
-const userLimit = userLimitEl.getAttribute('user_limit')
-const formUserLimit = editForm.querySelector('#user-limit')
+// const subject = editForm.querySelector('#task-subject')
+// const formSubject = editForm.querySelector('#form-subject')
+// const description = editForm.querySelector('#task-description')
+// const currentDescription = description.textContent
+// const deadline = editForm.querySelector('#task-deadline')
+// const formDeadline = editForm.querySelector('#form-deadline')
+// //const attachments = editForm.querySelector('#task-attachments')
+// const formAttachments = editForm.querySelector('#form-attachments')
+// const userLimitEl = editForm.querySelector('#task-user-limit')
+// const userLimit = userLimitEl.getAttribute('user_limit')
+// const formUserLimit = editForm.querySelector('#user-limit')
 
 
 // function resizeField() {
@@ -183,8 +183,8 @@ function deleteTask() {
 // }
 
 function hideEditButtons() {
-    saveChangesButton.classList.add('visually-hidden')
-    cancelChangesButton.classList.add('visually-hidden')
+    // saveChangesButton.classList.add('visually-hidden')
+    // cancelChangesButton.classList.add('visually-hidden')
     editButton.classList.remove('visually-hidden')
     deleteTaskButton.classList.remove('visually-hidden')
 }
@@ -194,6 +194,6 @@ function hideEditButtons() {
 // }
 
 // editButton.addEventListener('click', editTask)
-deleteButton.onclick = deleteTask
+deleteButton.addEventListener('click', deleteTask)
 // saveChangesButton.addEventListener('click', saveChanges)
 // cancelChangesButton.addEventListener('click', cancelChanges)
