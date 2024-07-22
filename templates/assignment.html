@@ -36,7 +36,7 @@
         </div>
     </div>
     <div class="position-relative">
-    <div class="position-relative" style="bottom: 0px" id="time-label-{{ task.uid }}" url="{{ url_for('checklabel', task_uid=task.uid) }}">
+    <div class="position-relative" style="bottom: 0px" id="time-label-{{ task.uid }}">
     <span class="fw-bold">Due to:</span> {{ task.deadline.strftime('%d %B %Y %H:%M') }}
     <br>
     <span class="fw-bold">Time remaining:</span> <span data-deadline="{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%S') }}" id="time-left"></span>
