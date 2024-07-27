@@ -73,7 +73,7 @@
             <span class="fs-5 position-relative" style="color: {{ color[task.label] }}; top: -4px; left: 3px" id="color-label"> ● </span>
         </div>
         {#    <div class="position-relative">#}
-        <div class="position-relative" style="bottom: 0px" id="time-label" url="{{ url_for('checklabel', task_uid=task.uid) }}">
+        <div class="position-relative" style="bottom: 0px" id="time-label">
         <span class="fw-bold">Due to:</span> <span id="task-deadline">{{ task.deadline.strftime('%d %B %Y %H:%M') }}</span>
         <br>
         <span class="fw-bold">Time remaining:</span> <span data-deadline="{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%S') }}" id="time-left"></span>
@@ -120,7 +120,7 @@
 
 <script src="{{ url_for('static', filename='left_time.js') }}"></script>
 <script src="{{ url_for('static', filename='accept_reject.js') }}"></script>
-<script src="{{ url_for('static', filename='task_label.js') }}"></script>
+<script src="{{ url_for('static', filename='task_socketio_handlers.js') }}"></script>
 <script src="{{ url_for('static', filename='edit_delete_task.js') }}"></script>
 
 

@@ -1,9 +1,8 @@
 from datetime import datetime
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from flask_socketio import emit
 
-from src import socketio
+from src import socketio, app
 from src.models import Task, User
 from src.resourses.task import TaskDescription
 
@@ -13,50 +12,64 @@ color_label = {Task.STATUS_WAITING: '#00FFD8',
                Task.STATUS_FAILED: '#FF0000'}
 
 
+def change_label(task_uid, label):
+    TaskDescription.patch(task_uid, label=label)
+    socketio.emit(f'change task label {task_uid}',
+                  {'task_uid': task_uid,
+                   'label': label,
+                   'color': color_label[label]},
+                  include_self=True)
+
+
 @socketio.on('accept reject event')
 def accept_reject_handler(task_uid):
     task = Task.get_task(task_uid, Task.label)
     users = list(map(lambda x: x.username, User.get_task_assigned_users(task.id, User.username)))
     if not users and task.label not in (Task.STATUS_WAITING, Task.STATUS_DONE, Task.STATUS_FAILED):
-        TaskDescription.patch(task_uid, label=Task.STATUS_WAITING)
-        emit('label status waiting', broadcast=True)
+        label = Task.STATUS_WAITING
+        change_label(task_uid, label)
     elif users and task.label not in (Task.STATUS_PROGRESS, Task.STATUS_DONE, Task.STATUS_FAILED):
-        TaskDescription.patch(task_uid, label=Task.STATUS_PROGRESS)
-        emit('label status progress', broadcast=True)
-    elif users and task.label == Task.STATUS_PROGRESS:
-        emit('assigned users list', {'users': users}, broadcast=True)
+        label = Task.STATUS_PROGRESS
+        change_label(task_uid, label)
+    socketio.emit(f'update users list {task_uid}',
+                  {'task_uid': task_uid,
+                   'users': users},
+                  include_self=True)
 
 
 @socketio.on('missed deadline event')
 def missed_deadline_handler(task_uid):
     task = Task.get_task(task_uid, Task.deadline, Task.label)
     if datetime.now() >= task.deadline and task.label not in (Task.STATUS_DONE, Task.STATUS_FAILED):
-        TaskDescription.patch(task_uid, label=Task.STATUS_FAILED)
-        emit('label status failed', broadcast=True)
+        label = Task.STATUS_FAILED
+        change_label(task_uid, label)
 
 
 @socketio.on('edit task event')
 def edit_task_handler(task_uid):
     task = Task.get_task(task_uid, Task.subject, Task.description, Task.deadline, Task.user_limit, Task.files)
-    emit('edit task page event',
-         {'subject': task.subject,
+    socketio.emit(f'edit task page {task_uid}',
+         {'task_uid': task_uid,
+          'subject': task.subject,
           'description': task.description,
           'deadline': task.deadline,
-          'user limit': task.user_limit,
+          'user_limit': task.user_limit,
           'files': task.files},
-         broadcast=True)
-    emit('edit assignment page event',
-         {'subject': task.subject,
+         include_self=True)
+    socketio.emit(f'edit assignment page {task_uid}',
+         {'task_uid': task_uid,
+          'subject': task.subject,
           'deadline': task.deadline},
-         broadcast=True)
+         include_self=True)
 
 
 def check_task_deadlines():
-    all_task_uid = Task.get_all(Task.uid)
-    for task_uid in all_task_uid:
-        missed_deadline_handler(task_uid, update_by_user=False)
+    with app.app_context():
+        tasks = Task.get_all(Task.uid)
+        for task in tasks:
+            missed_deadline_handler(task.uid)
 
 
 scheduler = BackgroundScheduler()
-scheduler.add_job(check_task_deadlines, 'interval', minutes=10)
+scheduler.add_job(check_task_deadlines, 'interval', minutes=1/60)
 scheduler.start()

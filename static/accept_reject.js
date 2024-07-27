@@ -2,7 +2,9 @@ const acceptButton = document.querySelector('#accept-task');
 const rejectButton = document.querySelector('#reject-task');
 const buttonDiv = document.querySelector('#accept-reject-button')
 const user = buttonDiv.getAttribute('cur_user')
-let hideTimeout
+
+
+const socket = io()
 
 
 function accept() {
@@ -66,6 +68,7 @@ function action(button) {
                     rejectButton.classList.add('disabled')
                     setTimeout(reject, 1000)
                 }
+                socket.emit('accept reject event', taskUid)
             } else {
                 button.classList.remove('disabled')
             }

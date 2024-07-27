@@ -14,4 +14,4 @@ login_manager = LoginManager(app)
 api = Api(app)
 socketio = SocketIO(app)
 
-from . import routes, auth
+from . import routes, auth, checking_labels
