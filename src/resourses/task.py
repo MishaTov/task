@@ -56,28 +56,3 @@ class AcceptReject(BaseResource):
         task_id = data.get('task_uid')
         result = Task.reject(username, task_id)
         return jsonify(result)
-
-
-class CheckLabel(BaseResource):
-    color_label = {'Waiting for an assignment': '#00FFD8',
-                   'In progress': '#FFD900',
-                   'Done': '#32FF00',
-                   'Missed the deadline': '#FF0000'}
-
-    @staticmethod
-    def get(task_uid):
-        task = Task.get_task(task_uid, Task.deadline, Task.label)
-        users = list(map(lambda x: x.username, User.get_task_assigned_users(task.id, User.username)))
-        label = task.label
-        if datetime.now() >= task.deadline and task.label not in (Task.STATUS_DONE, Task.STATUS_FAILED):
-            label = Task.STATUS_FAILED
-            TaskDescription.patch(task_uid, label=label)
-        elif not users and task.label not in (Task.STATUS_WAITING, Task.STATUS_DONE, Task.STATUS_FAILED):
-            label = Task.STATUS_WAITING
-            TaskDescription.patch(task_uid, label=label)
-        elif users and task.label not in (Task.STATUS_PROGRESS, Task.STATUS_DONE, Task.STATUS_FAILED):
-            label = Task.STATUS_PROGRESS
-            TaskDescription.patch(task_uid, label=label)
-        return jsonify({'users': users,
-                        'label': task.label,
-                        'color': CheckLabel.color_label[label]})

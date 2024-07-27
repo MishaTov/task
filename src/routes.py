@@ -10,7 +10,7 @@ from .resourses.profile import Profile
 from .resourses.register import Register
 from .resourses.main_page import MainPage
 from .resourses.assignment import Assignment
-from .resourses.task import TaskDescription, AcceptReject, CheckLabel
+from .resourses.task import TaskDescription, AcceptReject#, CheckLabel
 
 api.add_resource(MainPage, '/', strict_slashes=False)
 api.add_resource(Register, '/register', strict_slashes=False)
@@ -24,4 +24,4 @@ api.add_resource(Logout, '/logout', strict_slashes=False)
 api.add_resource(TaskDescription, '/assignment/<task_uid>', strict_slashes=False)
 api.add_resource(DownloadFile, '/assignment/download/<file_uid>', strict_slashes=False)
 api.add_resource(AcceptReject, '/assignment/<task_uid>/action', strict_slashes=False)
-api.add_resource(CheckLabel, '/label/<task_uid>', strict_slashes=False)
+#api.add_resource(CheckLabel, '/label/<task_uid>', strict_slashes=False)

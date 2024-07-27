@@ -11,6 +11,7 @@ flask-migrate = "*"
 python-dotenv = "*"
 flask-login = "*"
 flask-wtf = "*"
+apscheduler = "*"
 
 [dev-packages]
 

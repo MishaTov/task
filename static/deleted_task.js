@@ -1,11 +1,3 @@
-window.addEventListener('load', () => {
-    const delMessage = localStorage.getItem('task del msg')
-    if (delMessage){
-        showTaskDelMessage(delMessage)
-    }
-    localStorage.removeItem('task del msg')
-})
-
 function showTaskDelMessage(delMessage){
     const pageDiv = document.querySelector('#page-div')
 
@@ -59,3 +51,12 @@ function showTaskDelMessage(delMessage){
     const toast = new bootstrap.Toast(parentDiv)
     toast.show()
 }
+
+
+window.addEventListener('load', () => {
+    const delMessage = localStorage.getItem('task del msg')
+    if (delMessage){
+        showTaskDelMessage(delMessage)
+    }
+    localStorage.removeItem('task del msg')
+})
