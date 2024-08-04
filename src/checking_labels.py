@@ -14,7 +14,7 @@ color_label = {Task.STATUS_WAITING: '#00FFD8',
 
 def change_label(task_uid, label):
     TaskDescription.patch(task_uid, label=label)
-    socketio.emit(f'change task label {task_uid}',
+    socketio.emit(f'change task label',
                   {'task_uid': task_uid,
                    'label': label,
                    'color': color_label[label]},
