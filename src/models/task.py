@@ -123,6 +123,7 @@ class Task(db.Model):
         for attr, value in fields.items():
             if hasattr(task, attr):
                 setattr(task, attr, value)
+        # db.session.add(task)
         db.session.commit()
 
     def delete(self):

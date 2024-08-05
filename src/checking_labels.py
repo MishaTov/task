@@ -6,6 +6,7 @@ from src import socketio, app
 from src.models import Task, User
 from src.resourses.task import TaskDescription
 
+
 color_label = {Task.STATUS_WAITING: '#00FFD8',
                Task.STATUS_PROGRESS: '#FFD900',
                Task.STATUS_DONE: '#32FF00',
@@ -14,7 +15,12 @@ color_label = {Task.STATUS_WAITING: '#00FFD8',
 
 def change_label(task_uid, label):
     TaskDescription.patch(task_uid, label=label)
-    socketio.emit(f'change task label',
+    socketio.emit(f'change task label {task_uid}',
+                  {'task_uid': task_uid,
+                   'label': label,
+                   'color': color_label[label]},
+                  include_self=True)
+    socketio.emit(f'change assignment label',
                   {'task_uid': task_uid,
                    'label': label,
                    'color': color_label[label]},
@@ -41,6 +47,7 @@ def accept_reject_handler(task_uid):
 def missed_deadline_handler(task_uid):
     task = Task.get_task(task_uid, Task.deadline, Task.label)
     if datetime.now() >= task.deadline and task.label not in (Task.STATUS_DONE, Task.STATUS_FAILED):
+        print('missed deadline event for task:', task_uid)
         label = Task.STATUS_FAILED
         change_label(task_uid, label)
 
@@ -49,18 +56,18 @@ def missed_deadline_handler(task_uid):
 def edit_task_handler(task_uid):
     task = Task.get_task(task_uid, Task.subject, Task.description, Task.deadline, Task.user_limit, Task.files)
     socketio.emit(f'edit task page {task_uid}',
-         {'task_uid': task_uid,
-          'subject': task.subject,
-          'description': task.description,
-          'deadline': task.deadline,
-          'user_limit': task.user_limit,
-          'files': task.files},
-         include_self=True)
+                  {'task_uid': task_uid,
+                   'subject': task.subject,
+                   'description': task.description,
+                   'deadline': task.deadline,
+                   'user_limit': task.user_limit,
+                   'files': task.files},
+                  include_self=True)
     socketio.emit(f'edit assignment page {task_uid}',
-         {'task_uid': task_uid,
-          'subject': task.subject,
-          'deadline': task.deadline},
-         include_self=True)
+                  {'task_uid': task_uid,
+                   'subject': task.subject,
+                   'deadline': task.deadline},
+                  include_self=True)
 
 
 def check_task_deadlines():

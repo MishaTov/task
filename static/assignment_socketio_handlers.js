@@ -1,7 +1,7 @@
 let socketio = io()
 
 
-socketio.on('change task label', (data) => {
+socketio.on('change assignment label', (data) => {
     console.log(data)
     const taskLabel = document.getElementById(`task-label-${data.task_uid}`)
     const colorLabel = document.getElementById(`color-label-${data.task_uid}`)
