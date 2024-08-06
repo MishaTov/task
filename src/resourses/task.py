@@ -7,6 +7,7 @@ from flask_login import login_required
 #
 # from src import db, socketio
 from src.forms.task_form import TaskForm
+from src.forms.comment_form import CommentForm
 from src.models import Task, User
 from src.resourses.base import BaseResource
 
@@ -14,13 +15,15 @@ from src.resourses.base import BaseResource
 class TaskDescription(BaseResource):
     @login_required
     def get(self, task_uid):
-        form = TaskForm()
+        task_form = TaskForm()
+        comment_form = CommentForm()
         task = Task.get_task(task_uid)
         color_label = {'Waiting for an assignment': '#00FFD8',
                        'In progress': '#FFD900',
                        'Done': '#32FF00',
                        'Missed the deadline': '#FF0000'}
-        return make_response(self.render_template('task.html', color=color_label, task=task, form=form))
+        return make_response(self.render_template('task.html', color=color_label, task=task,
+                                                  task_form=task_form, comment_form=comment_form))
 
     @staticmethod
     def patch(task_uid, **fields):
