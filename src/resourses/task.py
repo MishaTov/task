@@ -3,11 +3,10 @@
 
 from flask import make_response, request, jsonify
 from flask_login import login_required
-# from flask_socketio import emit
-#
-# from src import db, socketio
+from flask_socketio import emit
+
+from src import socketio
 from src.forms.task_form import TaskForm
-from src.forms.comment_form import CommentForm
 from src.models import Task, User
 from src.resourses.base import BaseResource
 
@@ -16,14 +15,24 @@ class TaskDescription(BaseResource):
     @login_required
     def get(self, task_uid):
         task_form = TaskForm()
-        comment_form = CommentForm()
         task = Task.get_task(task_uid)
         color_label = {'Waiting for an assignment': '#00FFD8',
                        'In progress': '#FFD900',
                        'Done': '#32FF00',
                        'Missed the deadline': '#FF0000'}
-        return make_response(self.render_template('task.html', color=color_label, task=task,
-                                                  task_form=task_form, comment_form=comment_form))
+        return make_response(self.render_template('task.html', color=color_label, task=task, task_form=task_form))
+
+    @staticmethod
+    def post(**kwargs):
+        data = request.get_json()
+        task_uid = data.get('task_uid')
+        content = data.get('content')
+        comment = Task.post_comment(task_uid, content)
+        socketio.emit('new comment',
+                      {'content': comment.content,
+                       'created': comment.created.strftime('%d %b %Y %H:%M'),
+                       'author': comment.author},
+                      include_self=True)
 
     @staticmethod
     def patch(task_uid, **fields):

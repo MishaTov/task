@@ -118,33 +118,28 @@
         <br>
         <p class="mt-5"><span class="fw-bold">Created:</span> {{ task.created.strftime('%d %B %Y') }} by <a class="link-underline link-underline-opacity-0" href="{{ url_for('profile', username=task.created_by) }}">{{ task.created_by }}</a></p>
 </div>
-<div style="height: 550px; width: 14%; right: 10px; top: 10px; padding: 5px;">
+<div style="height: 90vh; width: 14%; padding: 5px;">
     <div style="height: 90%; overflow: auto; border: 1px solid rgba(0, 0, 0, 0.3); padding: 5px" id="comments-div">
+        {% for comment in task.comments %}
         <div style="padding: 0px 3px 0px 3px; margin-bottom: 10px;">
             <div style="margin-left: 5px; font-size: 12px">
-                <a class="link-opacity-75-hover link-underline link-underline-opacity-0" href="#">username</a>
+                <a class="link-opacity-75-hover link-underline link-underline-opacity-0" href="#">{{ comment.author }}</a>
             </div>
-            <div style="border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 5px; background-color: rgba(0,15,135,0.1); padding: 2px 5px 0px 2px; font-size: 12px">
-                some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text
-                some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text
-                some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text
-                some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text
-                some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text some text
+            <div style="word-break: break-all; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 5px; background-color: rgba(0,15,135,0.1); padding: 2px 5px 0px 2px; font-size: 12px">
+                {{ comment.content.replace('\n', '<br>') | safe }}
                 <div style="text-align: right; margin-top: 2px; font-size: 10px;">
-                    1 Jan 2024 00:00
+                    {{ comment.created.strftime('%d %b %Y %H:%M') }}
                 </div>
             </div>
         </div>
+        {% endfor %}
     </div>
     <div style="margin-top: 5px">
-        <form id="comment-form" method="post">
-            {{ comment_form.hidden_tag() }}
-            {{ comment_form.content(style="outline: none; border: 1px solid rgba(0, 0, 0, 0.3); border-bottom: 2px solid black; font-size: 12px; resize: vertical; width: 100%; min-height: 50px; max-height: 250px; scrollbar-width: none; padding-right: 20px;", id="comment-content") }}
-            <div style="position: relative; display: inline-block; height: 15px; width:15px; padding: 0px; font-size: 0px; top: -15px; left: 93%;">
-                <img src="{{ url_for('static', filename='img/send_message.png') }}" alt="Send comment" style="height: 15px; width: 15px; padding: 0">
-                <div style="text-align: right;">{{comment_form.send(style="position: absolute; top: 0px; left: 0px; opacity: 0; height: 15px; width: 15px; padding: 0px;", id="comment-send") }}</div>
-            </div>
-        </form>
+        <textarea placeholder="Type your comment here" style="outline: none; border: 1px solid rgba(0, 0, 0, 0.3); border-bottom: 2px solid black; font-size: 12px; resize: vertical; width: 100%; min-height: 50px; max-height: 250px; scrollbar-width: none; padding-right: 20px;" id="comment-content"></textarea>
+        <div style="position: relative; display: inline-block; height: 15px; width:15px; padding: 0px; font-size: 0px; top: -15px; left: 93%;">
+            <img src="{{ url_for('static', filename='img/send_message.png') }}" alt="Send comment" style="height: 15px; width: 15px; padding: 0">
+            <div style="text-align: right;"><button style="position: absolute; top: 0px; left: 0px; opacity: 0; height: 15px; width: 15px; padding: 0px;" id="comment-send">Send</button></div>
+        </div>
     </div>
 </div>
 </div>
@@ -153,6 +148,7 @@
 <script src="{{ url_for('static', filename='accept_reject.js') }}"></script>
 <script src="{{ url_for('static', filename='task_socketio_handlers.js') }}"></script>
 <script src="{{ url_for('static', filename='edit_delete_task.js') }}"></script>
+<script src="{{ url_for('static', filename='comments.js') }}"></script>
 
 
 {% endblock %}

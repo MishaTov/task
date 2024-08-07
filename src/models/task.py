@@ -6,6 +6,7 @@ from sqlalchemy import desc
 from sqlalchemy.orm import load_only
 
 from src import db
+from . import Comment
 from .assotiation_tables import user_task
 from .file import File
 from .user import User
@@ -67,6 +68,15 @@ class Task(db.Model):
         db.session.commit()
 
     @staticmethod
+    def post_comment(task_uid, content):
+        task = Task.get_task(task_uid)
+        comment = Comment.create_comment(task.id, content)
+        task.comments.append(comment)
+        db.session.add(task)
+        db.session.commit()
+        return comment
+
+    @staticmethod
     def add_files(files, task):
         files_ = File.upload(files, task.id)
         for file in files_:
@@ -123,7 +133,7 @@ class Task(db.Model):
         for attr, value in fields.items():
             if hasattr(task, attr):
                 setattr(task, attr, value)
-        # db.session.add(task)
+        db.session.add(task)
         db.session.commit()
 
     def delete(self):
