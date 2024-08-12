@@ -121,12 +121,22 @@
 <div style="height: 90vh; width: 14%; padding: 5px;">
     <div style="height: 90%; overflow: auto; border: 1px solid rgba(0, 0, 0, 0.3); padding: 5px" id="comments-div">
         {% for comment in task.comments %}
-        <div style="padding: 0px 3px 0px 3px; margin-bottom: 10px;">
-            <div style="margin-left: 5px; font-size: 12px">
-                <a class="link-opacity-75-hover link-underline link-underline-opacity-0" href="#">{{ comment.author }}</a>
+        <div class="comment-element" style="position: relative; padding: 0px 3px 0px 3px; margin-bottom: 10px;" comment_uid="comment-{{ comment.uid }}">
+            {% if current_user.username ==  comment.author %}
+            <span class="comment-edit-delete" style="position: absolute; right: 5px; height: 12px; width: 26px; font-size: 12px; top: 5px; display: none; justify-content: space-between; align-items: center; z-index: 10;">
+                <button style="background-color: inherit; border: none; height: 12px; width: 12px; padding: 0; font-size: 12px; display: flex; justify-content: center; align-items: center;" id="comment-edit">
+                    <img src="{{ url_for('static', filename='img/edit_msg.png') }}" alt="Edit comment" style="height: 12px; width: 12px;">
+                </button>
+                <button style="background-color: inherit; border: none; height: 12px; width: 12px; padding: 0; font-size: 12px; display: flex; justify-content: center; align-items: center;" id="comment-delete">
+                    <img src="{{ url_for('static', filename='img/delete_msg.png') }}" alt="Delete comment" style="height: 12px; width: 12px;">
+                </button>
+            </span>
+            {% endif %}
+            <div style="position: relative; margin-left: 5px; font-size: 12px">
+                <a class="link-opacity-75-hover link-underline link-underline-opacity-0" href="{{ url_for('profile', username=comment.author) }}">{{ comment.author }}</a>
             </div>
             <div style="word-break: break-all; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 5px; background-color: rgba(0,15,135,0.1); padding: 2px 5px 0px 2px; font-size: 12px">
-                {{ comment.content.replace('\n', '<br>') | safe }}
+                <span class="comment-content">{{ comment.content.replace('\n', '<br>') | safe }}</span>
                 <div style="text-align: right; margin-top: 2px; font-size: 10px;">
                     {{ comment.created.strftime('%d %b %Y %H:%M') }}
                 </div>
@@ -135,9 +145,9 @@
         {% endfor %}
     </div>
     <div style="margin-top: 5px">
-        <textarea placeholder="Type your comment here" style="outline: none; border: 1px solid rgba(0, 0, 0, 0.3); border-bottom: 2px solid black; font-size: 12px; resize: vertical; width: 100%; min-height: 50px; max-height: 250px; scrollbar-width: none; padding-right: 20px;" id="comment-content"></textarea>
+        <textarea placeholder="Type your comment here" style="outline: none; border: 1px solid rgba(0, 0, 0, 0.3); border-bottom: 2px solid black; font-size: 12px; resize: none; width: 100%; min-height: 50px; max-height: 250px; scrollbar-width: none; padding-right: 20px;" id="comment-input-field"></textarea>
         <div style="position: relative; display: inline-block; height: 15px; width:15px; padding: 0px; font-size: 0px; top: -15px; left: 93%;">
-            <img src="{{ url_for('static', filename='img/send_message.png') }}" alt="Send comment" style="height: 15px; width: 15px; padding: 0">
+            <img src="{{ url_for('static', filename='img/send_msg.png') }}" alt="Send comment" style="height: 15px; width: 15px; padding: 0">
             <div style="text-align: right;"><button style="position: absolute; top: 0px; left: 0px; opacity: 0; height: 15px; width: 15px; padding: 0px;" id="comment-send">Send</button></div>
         </div>
     </div>
