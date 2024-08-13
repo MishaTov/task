@@ -25,18 +25,21 @@ class TaskDescription(BaseResource):
     @staticmethod
     def post(**kwargs):
         data = request.get_json()
-        task_uid = data.get('task_uid')
-        content = data.get('content')
-        comment = Task.post_comment(task_uid, content)
-        socketio.emit('new comment',
-                      {'content': comment.content,
-                       'created': comment.created.strftime('%d %b %Y %H:%M'),
-                       'author': comment.author},
-                      include_self=True)
+        print(data)
+        # data = request.get_json()
+        # task_uid = data.get('task_uid')
+        # content = data.get('content')
+        # comment = Task.post_comment(task_uid, content)
+        # socketio.emit('new comment',
+        #               {'content': comment.content,
+        #                'created': comment.created.strftime('%d %b %Y %H:%M'),
+        #                'author': comment.author},
+        #               include_self=True)
 
     @staticmethod
-    def patch(task_uid, **fields):
-        Task.update_task_info(task_uid, **fields)
+    def patch(**kwargs):
+        data = request.get_json()
+        print(data)
 
     @staticmethod
     def delete(task_uid):
@@ -47,29 +50,6 @@ class TaskDescription(BaseResource):
         subject = task.subject
         task.delete()
         return jsonify({'message': f'Task "{subject}" was deleted'})
-
-    # @staticmethod
-    # @socketio.on('get_label')
-    # def handle_connect(task_uid):
-    #     color_label = {'Waiting for an assignment': '#00FFD8',
-    #                    'In progress': '#FFD900',
-    #                    'Done': '#32FF00',
-    #                    'Missed the deadline': '#FF0000'}
-    #     task = Task.get_task(task_uid, Task.deadline, Task.label)
-    #     while True:
-    #         sleep(1)
-    #         users = list(map(lambda x: x.username, User.get_task_assigned_users(task.id, User.username)))
-    #         label = task.label
-    #         if datetime.now() >= task.deadline and task.label not in (Task.STATUS_DONE, Task.STATUS_FAILED):
-    #             label = Task.STATUS_FAILED
-    #             TaskDescription.patch(task_uid, label=label)
-    #         elif not users and task.label not in (Task.STATUS_WAITING, Task.STATUS_DONE, Task.STATUS_FAILED):
-    #             label = Task.STATUS_WAITING
-    #             TaskDescription.patch(task_uid, label=label)
-    #         elif users and task.label not in (Task.STATUS_PROGRESS, Task.STATUS_DONE, Task.STATUS_FAILED):
-    #             label = Task.STATUS_PROGRESS
-    #             TaskDescription.patch(task_uid, label=label)
-    #         emit('label', {'users': users, 'label': task.label, 'color': color_label[label]})
 
 
 class AcceptReject(BaseResource):

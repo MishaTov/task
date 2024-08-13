@@ -3,28 +3,18 @@ let socketIO = io()
 const commentsDiv = document.querySelector('#comments-div')
 const sendButton = document.querySelector('#comment-send')
 const commentInputField = document.querySelector('#comment-input-field')
-const url = document.querySelector('#task-info').getAttribute('description_url')
-const uid = document.querySelector('#task-info').getAttribute('task_uid')
-
 const commentElements = document.querySelectorAll('.comment-element')
+
+const url = document.querySelector('#task-info').getAttribute('description_url')
+const currentTaskUid = document.querySelector('#task-info').getAttribute('task_uid')
+
+let editMode = false
+let activeCommentUid
 
 commentsDiv.scrollTop = commentsDiv.scrollHeight
 
-function sendComment() {
-    if (!commentInputField.value.trim()) {
-        commentInputField.value = ''
-    } else {
-        fetch(url, {
-            method: 'POST',
-            headers: {
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify({task_uid: uid, content: commentInputField.value})
-        })
-    }
-}
 
-function buildActionButton(){
+function buildActionButton() {
     const actionButton = document.createElement('button')
     actionButton.style.backgroundColor = 'inherit'
     actionButton.style.border = 'none'
@@ -41,9 +31,12 @@ function buildActionButton(){
 
 function showNewComment(comment) {
     commentInputField.value = ''
-    comment.content = comment.content.replaceAll('\n', '<br>')
+    comment.content = comment.content
+        .replaceAll('\n', '<br>')
+        .replaceAll(' ', '&nbsp;')
 
     const newComment = document.createElement('div')
+    newComment.classList.add('comment-element')
     newComment.style.position = 'relative'
     newComment.style.padding = '0px 3px 0px 3px'
     newComment.style.marginBottom = '10px'
@@ -69,7 +62,7 @@ function showNewComment(comment) {
 
     const newCommentContent = document.createElement('span')
     newCommentContent.classList.add('comment-content')
-    newCommentContent.innerHTML = comment.content.trim()
+    newCommentContent.innerHTML = comment.content.replaceAll(' ', '&nbsp;')
 
     const newCommentDate = document.createElement('div')
     newCommentDate.style.textAlign = 'right'
@@ -139,18 +132,53 @@ function hideCommentActionButtons() {
     this.querySelector('.comment-edit-delete').style.display = 'none'
 }
 
-function editComment(){
-    const currentComment = this.parentNode.parentNode
-    const commentUid = currentComment.getAttribute('comment_uid')
-    commentInputField.value = currentComment.querySelector('.comment-content').innerHTML.replaceAll('<br>', '\n')
+function sendComment() {
+    if (!commentInputField.value.trim()) {
+        commentInputField.value = ''
+    } else {
+        let requestMethod, requestBody
+        if (editMode) {
+            requestMethod = 'PATCH'
+            requestBody = JSON.stringify({
+                type: 'comment',
+                comment_uid: activeCommentUid,
+                content: commentInputField.value
+            })
+        } else {
+            requestMethod = 'POST'
+            requestBody = JSON.stringify({
+                type: 'comment',
+                task_uid: currentTaskUid,
+                content: commentInputField.value
+            })
+        }
+        fetch(url, {
+            method: requestMethod,
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: requestBody
+        })
+        // console.log(requestMethod)
+        // console.log(requestBody)
+    }
+}
+
+function editComment() {
+    editMode = true
+    const currentComment = this.closest('.comment-element')
+    activeCommentUid = currentComment.getAttribute('comment_uid')
+    commentInputField.value = currentComment.querySelector('.comment-content').innerHTML
+        .replaceAll('<br>', '\n')
+        .replaceAll('&nbsp;', ' ')
     commentInputField.focus()
 }
 
-function deleteComment(){
+function deleteComment() {
     const commentUid = this.parentNode.parentNode.getAttribute('comment_uid')
 }
 
-function setCommentListeners(comment){
+function setCommentListeners(comment) {
     comment.onmouseover = showCommentActionButtons
     comment.onmouseout = hideCommentActionButtons
     comment.querySelector('#comment-edit').addEventListener('click', editComment)
@@ -159,17 +187,20 @@ function setCommentListeners(comment){
 
 commentElements.forEach((comment) => {
     const actionButtons = comment.querySelector('.comment-edit-delete')
-    if (comment.contains(actionButtons)){
+    if (comment.contains(actionButtons)) {
         setCommentListeners(comment)
     }
 })
 
 commentInputField.onkeyup = (e) => {
-    if (e.keyCode === 13) {
-        if (!e.shiftKey) {
-            commentInputField.value = commentInputField.value.trim()
-            sendComment()
-        }
+    if (e.key === 'Enter' && !e.shiftKey) {
+        commentInputField.value = commentInputField.value.trim()
+        sendComment()
+        editMode = false
+    } else if (e.key === 'Escape') {
+        commentInputField.value = ''
+        commentInputField.blur()
+        editMode = false
     }
 }
 
