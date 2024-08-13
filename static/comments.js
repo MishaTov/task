@@ -30,7 +30,6 @@ function buildActionButton() {
 
 
 function showNewComment(comment) {
-    commentInputField.value = ''
     comment.content = comment.content
         .replaceAll('\n', '<br>')
         .replaceAll(' ', '&nbsp;')
@@ -40,6 +39,7 @@ function showNewComment(comment) {
     newComment.style.position = 'relative'
     newComment.style.padding = '0px 3px 0px 3px'
     newComment.style.marginBottom = '10px'
+    newComment.setAttribute('id', `comment-${comment.comment_uid}`)
 
     const newCommentAuthor = document.createElement('div')
     newCommentAuthor.style.marginLeft = '5px'
@@ -124,6 +124,13 @@ function showNewComment(comment) {
     commentsDiv.scrollTop = commentsDiv.scrollHeight
 }
 
+function updateComment(comment){
+    const commentElement = document.querySelector(`#comment-${comment.comment_uid}`)
+    commentElement.querySelector('.comment-content').innerHTML = comment.content
+        .replaceAll('\n', '<br>')
+        .replaceAll(' ', '&nbsp;')
+}
+
 function showCommentActionButtons() {
     this.querySelector('.comment-edit-delete').style.display = 'flex'
 }
@@ -159,15 +166,13 @@ function sendComment() {
             },
             body: requestBody
         })
-        // console.log(requestMethod)
-        // console.log(requestBody)
     }
 }
 
 function editComment() {
     editMode = true
     const currentComment = this.closest('.comment-element')
-    activeCommentUid = currentComment.getAttribute('comment_uid')
+    activeCommentUid = currentComment.getAttribute('id').replaceAll('comment-', '')
     commentInputField.value = currentComment.querySelector('.comment-content').innerHTML
         .replaceAll('<br>', '\n')
         .replaceAll('&nbsp;', ' ')
@@ -192,10 +197,12 @@ commentElements.forEach((comment) => {
     }
 })
 
-commentInputField.onkeyup = (e) => {
+commentInputField.onkeydown = (e) => {
     if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault()
         commentInputField.value = commentInputField.value.trim()
         sendComment()
+        commentInputField.value = ''
         editMode = false
     } else if (e.key === 'Escape') {
         commentInputField.value = ''
@@ -206,3 +213,4 @@ commentInputField.onkeyup = (e) => {
 
 sendButton.addEventListener('click', sendComment)
 socketIO.on('new comment', showNewComment)
+socketIO.on('update comment', updateComment)

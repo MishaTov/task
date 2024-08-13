@@ -7,7 +7,7 @@ from flask_socketio import emit
 
 from src import socketio
 from src.forms.task_form import TaskForm
-from src.models import Task, User
+from src.models import Task, User, Comment
 from src.resourses.base import BaseResource
 
 
@@ -25,21 +25,32 @@ class TaskDescription(BaseResource):
     @staticmethod
     def post(**kwargs):
         data = request.get_json()
-        print(data)
-        # data = request.get_json()
-        # task_uid = data.get('task_uid')
-        # content = data.get('content')
-        # comment = Task.post_comment(task_uid, content)
-        # socketio.emit('new comment',
-        #               {'content': comment.content,
-        #                'created': comment.created.strftime('%d %b %Y %H:%M'),
-        #                'author': comment.author},
-        #               include_self=True)
+        if data.get('type') == 'comment':
+            task_uid = data.get('task_uid')
+            content = data.get('content')
+            comment = Task.post_comment(task_uid, content)
+            socketio.emit('new comment',
+                          {'comment_uid': comment.uid,
+                           'content': comment.content,
+                           'created': comment.created.strftime('%d %b %Y %H:%M'),
+                           'author': comment.author},
+                          include_self=True)
 
     @staticmethod
     def patch(**kwargs):
         data = request.get_json()
-        print(data)
+        if data.get('type') == 'task':
+            task_uid = data.pop('task_uid')
+            task_info = data.get('task_info')
+            Task.update_task_info(task_uid, **task_info)
+        elif data.get('type') == 'comment':
+            comment_uid = data.get('comment_uid')
+            content = data.get('content')
+            comment = Comment.update_comment(comment_uid, content)
+            socketio.emit('update comment',
+                          {'comment_uid': comment.uid,
+                           'content': comment.content},
+                          include_self=True)
 
     @staticmethod
     def delete(task_uid):

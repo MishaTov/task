@@ -23,8 +23,20 @@ class Comment(db.Model):
         self.task_id = task_id
 
     @staticmethod
+    def get_comment(comment_uid):
+        return db.session.query(Comment).filter_by(uid=comment_uid).first()
+
+    @staticmethod
     def create_comment(task_id, content):
         new_comment = Comment(task_id, content)
         db.session.add(new_comment)
         db.session.commit()
         return new_comment
+
+    @staticmethod
+    def update_comment(comment_uid, content):
+        comment = Comment.get_comment(comment_uid)
+        comment.content = content
+        db.session.add(comment)
+        db.session.commit()
+        return comment
