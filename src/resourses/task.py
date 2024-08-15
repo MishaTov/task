@@ -14,8 +14,8 @@ from src.resourses.base import BaseResource
 class TaskDescription(BaseResource):
     @login_required
     def get(self, task_uid):
-        task_form = TaskForm()
         task = Task.get_task(task_uid)
+        task_form = TaskForm(obj=task)
         color_label = {'Waiting for an assignment': '#00FFD8',
                        'In progress': '#FFD900',
                        'Done': '#32FF00',

@@ -13,29 +13,51 @@
                 <button type="button" class="align-self-center p-0" data-bs-toggle="modal" data-bs-target="#confirm-delete-task-window" id="delete-task-button" style="background-color: white; border: none; margin: 0px 0px 0px 10px">
                     <img src="{{ url_for('static', filename='img/delete.png') }}" alt="Delete task" style="height: 20px; width: 20px">
                 </button>
-
                 <div class="modal" id="edit-task-window">
                     <div class="modal-dialog modal-fullscreen">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title fs-1">Edit task</h1>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                <h1 class="modal-title" style="position:relative; font-size: 50px;">Edit task</h1>
+                                <div style="display: flex; right: 1%; position: absolute; height: 30px">
+                                <button type="button" class="btn btn-primary" id="edit-save-changes" style="margin-right: 15px; font-size: 14px; padding: 0px 5px">
+                                    Save changes
+                                </button>
+                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="edit-cancel-changes" style="margin: 0; font-size: 14px; padding: 0px 5px">
+                                    Cancel
+                                </button>
+                                </div>
                             </div>
-                            <div class="modal-body">
-                                <form id="edit-task-form">
-                                    {{ task_form.hidden_tag() }}
-                                    {{ task_form.subject(value=task.subject, id='form-subject') }}
-                                    {{ task_form.description(value=task.description, id='form-description') }}
-                                    {{ task_form.files(class='form-control form-control-sm', style='width: 205px; margin-top: 10px', id='form-attachments') }}
-                                    {{ task_form.deadline(value=task.deadline, class='form-control', style='width: 205px', id='form-deadline') }}
-                                    <div id="task-user-limit" user_limit="{{ task.user_limit }}">
-                                        <p class="h3">Max count of workers for this task:<output id="user-count"></output></p>
-                                        {{ task_form.user_limit(value=task.user_limit, class='form-range', style='width: 300px', id='user-limit') }}
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-sm btn-light" data-bs-dismiss="modal">Cancel</button>
+                            <div class="modal-body" style="position:relative; display: flex;">
+                                <div style="width: 40%;">
+                                    <form id="edit-task-form" enctype="multipart/form-data">
+                                        {{ task_form.hidden_tag() }}
+                                        <h3>Subject</h3>
+                                        {{ task_form.subject(class='form-control', style='margin_bottom: 15px', id='edit-form-subject') }}
+                                        <br>
+                                        <h3>Description</h3>
+                                        {{ task_form.description(class='form-control', style='margin_bottom: 15px; max-height: 500px;', id='edit-form-description') }}
+                                        <br>
+                                        <h3>Deadline</h3>
+                                        {{ task_form.deadline(class='form-control', style='margin_bottom: 15px; width: auto;', id='edit-form-deadline') }}
+                                        <br>
+                                        <h3>Attachments</h3>
+                                        {% for file in task.files %}
+                                            <span style="position: relative; display: inline-block; margin: 15px 30px 0px 0px; height: 25px;">
+                                                <a href="{{ url_for('downloadfile', file_uid=file.uid) }}" class="btn btn-outline-dark d-flex d-inline-flex" style="height: inherit; width: 150px; font-size: 14px; padding: 2px 5px; align-items: center; justify-content: center;"><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ file.filename }}</span></a>
+                                                <button class="remove-file" type="button" style="background-color: inherit; border: 1px solid black; border-radius: 50%; width: 15px; height: 15px; position: absolute; top: -2px; right: -17px; padding: 0; display: flex; align-items: center; justify-content: center">
+                                                    <span style="display: block; font-size: 18px; line-height: 0.7; height: 15px; width: 15px">×</span>
+                                                </button>
+                                            </span>
+                                        {% endfor %}
+                                        {{ task_form.files(class='form-control form-control-sm', style='margin-bottom: 15px; margin-top: 15px; width: auto;', id='edit-form-attachments') }}
+                                        <br>
+                                        <div id="task-user-limit" user_limit="{{ task.user_limit }}">
+                                            <h3>Max count of workers for this task:</h3>
+                                            {{ task_form.user_limit(class='form-range', style='width: 50%; max-width: 300px; min-width: 200px; height: 20px;', id='edit-form-user-limit') }}
+                                            <output style="margin-left: 10px; font-size: inherit; height: 20px; padding: 0;" id="edit-form-user-count"></output>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -60,13 +82,6 @@
                         </div>
                     </div>
                 </div>
-
-                <button type="button" class="btn btn-primary align-self-center p-0 visually-hidden" id="save-changes" style="margin: 0px 0px 0px 35px; width: 55px">
-                    Save
-                </button>
-                <button type="button" class="btn btn-danger align-self-center p-0 visually-hidden" id="cancel-changes" style="margin: 0px 0px 0px 10px; width: 55px">
-                    Cancel
-                </button>
             {% endif %}
         </div>
         <div class="position-relative top-0 end-0 d-flex">
@@ -160,5 +175,13 @@
 <script src="{{ url_for('static', filename='edit_delete_task.js') }}"></script>
 <script src="{{ url_for('static', filename='comments.js') }}"></script>
 
+<script>
+    const value = document.querySelector("#edit-form-user-count");
+    const input = document.querySelector("#edit-form-user-limit");
+    value.textContent = input.value;
+    input.addEventListener("input", (event) => {
+      value.textContent = event.target.value;
+    });
+</script>
 
 {% endblock %}
