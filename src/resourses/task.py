@@ -53,14 +53,23 @@ class TaskDescription(BaseResource):
                           include_self=True)
 
     @staticmethod
-    def delete(task_uid):
-        task = Task.get_task(task_uid, Task.subject)
-        for user in task.users:
-            user.current_task_number -= 1
-            User.update_user_info(user.username, current_task_number=user.current_task_number)
-        subject = task.subject
-        task.delete()
-        return jsonify({'message': f'Task "{subject}" was deleted'})
+    def delete(**kwargs):
+        data = request.get_json()
+        if data.get('type') == 'task':
+            task_uid = data.get('task_uid')
+            task = Task.get_task(task_uid, Task.subject)
+            for user in task.users:
+                user.current_task_number -= 1
+                User.update_user_info(user.username, current_task_number=user.current_task_number)
+            subject = task.subject
+            task.delete()
+            return jsonify({'message': f'Task "{subject}" was deleted'})
+        elif data.get('type') == 'comment':
+            comment_uid = data.get('comment_uid')
+            Comment.delete_comment(comment_uid)
+            socketio.emit('delete comment',
+                          {'comment_uid': comment_uid},
+                          include_self=True)
 
 
 class AcceptReject(BaseResource):

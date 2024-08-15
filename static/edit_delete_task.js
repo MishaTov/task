@@ -108,7 +108,10 @@ function deleteTask() {
         headers: {
             'Content-type': 'application/json'
         },
-        body: JSON.stringify({task_uid: taskUid})
+        body: JSON.stringify({
+            type: 'task',
+            task_uid: taskUid
+        })
     })
         .then(response => response.json())
         .then(data => {

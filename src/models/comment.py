@@ -40,3 +40,9 @@ class Comment(db.Model):
         db.session.add(comment)
         db.session.commit()
         return comment
+
+    @staticmethod
+    def delete_comment(comment_uid):
+        comment = Comment.get_comment(comment_uid)
+        db.session.delete(comment)
+        db.session.commit()

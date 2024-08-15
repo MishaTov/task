@@ -1,7 +1,8 @@
 let socketIO = io()
 
 const commentsDiv = document.querySelector('#comments-div')
-const sendButton = document.querySelector('#comment-send')
+const sendCommentButton = document.querySelector('#comment-send')
+const deleteCommentButton = document.querySelector('#comment-send')
 const commentInputField = document.querySelector('#comment-input-field')
 const commentElements = document.querySelectorAll('.comment-element')
 
@@ -180,7 +181,24 @@ function editComment() {
 }
 
 function deleteComment() {
-    const commentUid = this.parentNode.parentNode.getAttribute('comment_uid')
+    const currentComment = this.closest('.comment-element')
+    activeCommentUid = currentComment.getAttribute('id').replaceAll('comment-', '')
+    fetch(url, {
+        method: 'DELETE',
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            type: 'comment',
+            comment_uid: activeCommentUid
+        })
+    })
+}
+
+function removeComment(comment){
+    editMode = false
+    const currentComment = document.querySelector(`#comment-${comment.comment_uid}`)
+    currentComment.remove()
 }
 
 function setCommentListeners(comment) {
@@ -211,6 +229,8 @@ commentInputField.onkeydown = (e) => {
     }
 }
 
-sendButton.addEventListener('click', sendComment)
+sendCommentButton.addEventListener('click', sendComment)
+deleteCommentButton.addEventListener('click', deleteComment)
 socketIO.on('new comment', showNewComment)
 socketIO.on('update comment', updateComment)
+socketIO.on('delete comment', removeComment)
