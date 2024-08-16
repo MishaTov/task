@@ -4,7 +4,7 @@
 {% block content %}
 <div class="d-flex align-items-center justify-content-center vh-100">
     <div class="border p-4 position-relative" style="width: 500px">
-        <form id="TaskForm" method="post" class="row g-3" novalidate enctype="multipart/form-data">
+        <form id="task-form" method="post" class="row g-3" novalidate enctype="multipart/form-data">
             <h1 class="text-center">{{ title }}</h1>
             {{ form.hidden_tag() }}
 
@@ -60,42 +60,7 @@
         </form>
     </div>
 </div>
-<script>
-    (() => {
-      'use strict'
 
-      const forms = document.querySelectorAll('.needs-validation')
+<script src="{{ url_for('static', filename='create_task.js') }}"></script>
 
-      Array.from(forms).forEach(form => {
-        form.addEventListener('submit', event => {
-          if (!form.checkValidity()) {
-            event.preventDefault()
-            event.stopPropagation()
-          }
-
-          form.classList.add('was-validated')
-        }, false)
-      })
-    })()
-
-    window.addEventListener('pageshow', function(event) {
-        var form = document.getElementById('TaskForm');
-        if (event.persisted) {
-            form.reset();
-            form.classList.remove('was-validated');
-        }
-    });
-
-    window.onload = function() {
-        document.getElementById('TaskForm').reset();
-    };
-
-const value = document.querySelector("#workers_count");
-const input = document.querySelector("#workers");
-value.textContent = input.value;
-input.addEventListener("input", (event) => {
-  value.textContent = event.target.value;
-});
-
-</script>
 {% endblock %}
