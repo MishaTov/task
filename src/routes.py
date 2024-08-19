@@ -10,7 +10,7 @@ from .resourses.profile import Profile
 from .resourses.register import Register
 from .resourses.main_page import MainPage
 from .resourses.assignment import Assignment
-from .resourses.task import TaskDescription, AcceptReject#, CheckLabel
+from .resourses.task import TaskDescription, AcceptReject
 
 api.add_resource(MainPage, '/', strict_slashes=False)
 api.add_resource(Register, '/register', strict_slashes=False)
