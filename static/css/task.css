@@ -1,0 +1,14 @@
+.action-task-button {
+    background-color: inherit;
+    border: none;
+    height: 20px;
+    width: 20px
+}
+
+.edit-task-button-mg {
+    margin: 0 0 0 35px;
+}
+
+.delete-task-button-mg {
+    margin: 0 0 0 10px;
+}

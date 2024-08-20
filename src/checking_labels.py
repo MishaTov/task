@@ -4,7 +4,6 @@ from apscheduler.schedulers.background import BackgroundScheduler
 
 from src import socketio, app
 from src.models import Task, User
-from src.resourses.task import TaskDescription
 
 
 color_label = {Task.STATUS_WAITING: '#00FFD8',
@@ -43,11 +42,10 @@ def accept_reject_handler(task_uid):
                   include_self=True)
 
 
-@socketio.on('missed deadline event')
+@socketio.on('missed deadline')
 def missed_deadline_handler(task_uid):
     task = Task.get_task(task_uid, Task.deadline, Task.label)
     if datetime.now() >= task.deadline and task.label not in (Task.STATUS_DONE, Task.STATUS_FAILED):
-        print('missed deadline event for task:', task_uid)
         label = Task.STATUS_FAILED
         change_label(task_uid, label)
 

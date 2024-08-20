@@ -1,0 +1,33 @@
+.task-link {
+    border: 1px solid;
+}
+
+.task-link:hover {
+    left: 10px;
+    bottom: 5px;
+    box-shadow: 0 0 10px -0.1em blue;
+}
+
+.create-task-button {
+    font-size: 15px;
+    height: 33px;
+}
+
+.task-div {
+    text-decoration: none;
+    color: inherit;
+}
+
+.task-subject-div {
+    margin: 0 0 16px 0;
+}
+
+.task-subject {
+    margin: 20px 45px 0 0;
+}
+
+.task-color-label {
+    top: -4px;
+    right: 5px;
+}
+

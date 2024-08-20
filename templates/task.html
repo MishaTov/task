@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/css/task.css">
+{% endblock head %}
+
 {% block content %}
     {{ super() }}
 <div class="d-flex">
@@ -7,11 +12,11 @@
         <div class="d-flex">
             <h1 id="task-subject" class="text-break">{{ task.subject }}</h1>
             {% if current_user.username == task.created_by %}
-                <button type="button" class="align-self-center p-0" data-bs-toggle="modal" data-bs-target="#edit-task-window" id="edit-task-button" style="background-color: white; border: none; margin: 0px 0px 0px 35px">
-                    <img src="{{ url_for('static', filename='img/edit.png') }}" alt="Edit task" style="height: 20px; width: 20px">
+                <button type="button" class="align-self-center p-0 action-task-button edit-task-button-mg" data-bs-toggle="modal" data-bs-target="#edit-task-window" id="edit-task-button">
+                    <img class="action-task-button" src="{{ url_for('static', filename='img/edit.png') }}" alt="Edit task">
                 </button>
-                <button type="button" class="align-self-center p-0" data-bs-toggle="modal" data-bs-target="#confirm-delete-task-window" id="delete-task-button" style="background-color: white; border: none; margin: 0px 0px 0px 10px">
-                    <img src="{{ url_for('static', filename='img/delete.png') }}" alt="Delete task" style="height: 20px; width: 20px">
+                <button type="button" class="align-self-center p-0 action-task-button delete-task-button-mg" data-bs-toggle="modal" data-bs-target="#confirm-delete-task-window" id="delete-task-button">
+                    <img class="action-task-button" src="{{ url_for('static', filename='img/delete.png') }}" alt="Delete task">
                 </button>
                 <div class="modal" id="edit-task-window">
                     <div class="modal-dialog modal-fullscreen">
@@ -169,11 +174,12 @@
 </div>
 </div>
 
-<script src="{{ url_for('static', filename='left_time.js') }}"></script>
-<script src="{{ url_for('static', filename='accept_reject.js') }}"></script>
-<script src="{{ url_for('static', filename='task_socketio_handlers.js') }}"></script>
-<script src="{{ url_for('static', filename='edit_delete_task.js') }}"></script>
-<script src="{{ url_for('static', filename='comments.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/socket.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/left_time.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/accept_reject.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/task_socketio_handlers.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/edit_delete_task.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/comments.js') }}"></script>
 
 <script>
     const value = document.querySelector("#edit-form-user-count");

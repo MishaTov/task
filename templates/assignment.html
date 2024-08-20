@@ -1,5 +1,10 @@
 {% extends 'base.html' %}
 
+{% block head %}
+    {{ super() }}
+    <link rel="stylesheet" href="/static/css/assignment.css">
+{% endblock head %}
+
 {% block content %}
     {{ super() }}
 
@@ -7,36 +12,26 @@
         <div class="bg-success w-25 text-center p-1 rounded">{{ msg }}</div>
 {% endfor %}
 
-<style>
-.task-link{
-    border: 1px solid;
-}
-.task-link:hover {
-    left: 10px;
-    bottom: 5px;
-    box-shadow: 0 0 10px -0.1em blue;
-}
-</style>
-
 <div class="p-4" id="page-div">
 <div class="position-relative d-flex" id="title">
 <h1>{{ title }}</h1>
-<a class="btn btn-primary m-2 p-1 align-self-center" style="font-size: 15px; height: 33px;" href="{{ url_for('createtask') }}" role="button">+ Create task</a>
+<a class="btn btn-primary m-2 p-1 align-self-center create-task-button" href="{{ url_for('createtask') }}" role="button">+ Create task</a>
+
 </div>
 <br>
 <div class="position-relative w-50" id="tasks">
 {% for task in tasks %}
-<a class="task-div" href="{{ url_for('taskdescription', task_uid=task.uid) }}" style="text-decoration: none; color: inherit;" id="task-uid" task_uid="{{ task.uid }}">
+<a class="task-div" href="{{ url_for('taskdescription', task_uid=task.uid) }}" id="task-info" task_uid="{{ task.uid }}">
 <div class="task-link m-2 p-2 position-relative">
-    <div style="margin: 0px 0px 16px 0px;">
-        <div class="fs-4 text-break lh-sm" style="margin: 20px 45px 0px 0px" id="task-subject-{{ task.uid }}">{{ task.subject }}</div>
+    <div class="task-subject-div">
+        <div class="fs-4 text-break lh-sm task-subject" id="task-subject-{{ task.uid }}">{{ task.subject }}</div>
         <div class="position-absolute top-0 end-0 d-flex">
         <div class="position-relative" style="right: 8px" id="task-label-{{ task.uid }}">{{ task.label }}</div>
-            <span class="fs-5 position-relative" style="color: {{ color[task.label] }}; top: -4px; right: 5px" id="color-label-{{ task.uid }}"> ● </span>
+            <span class="fs-5 position-relative task-color-label" style="color: {{ color[task.label] }};" id="color-label-{{ task.uid }}"> ● </span>
         </div>
     </div>
     <div class="position-relative">
-    <div class="position-relative" style="bottom: 0px" id="time-label-{{ task.uid }}">
+    <div class="position-relative" style="bottom: 0" id="time-label-{{ task.uid }}">
     <span class="fw-bold" id="task-deadline-{{ task.uid }}">Due to:</span> {{ task.deadline.strftime('%d %B %Y %H:%M') }}
     <br>
     <span class="fw-bold">Time remaining:</span> <span data-deadline="{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%S') }}" id="time-left"></span>
@@ -48,8 +43,9 @@
 </div>
 </div>
 
-<script src="{{ url_for('static', filename='deleted_task.js') }}"></script>
-<script src="{{ url_for('static', filename='left_time.js') }}"></script>
-<script src="{{ url_for('static', filename='assignment_socketio_handlers.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/socket.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/deleted_task.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/left_time.js') }}"></script>
+<script type="module" src="{{ url_for('static', filename='js/assignment_socketio_handlers.js') }}"></script>
 
 {% endblock %}

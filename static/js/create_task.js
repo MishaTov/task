@@ -22,19 +22,18 @@ function dynamicUserLimit() {
     });
 }
 
-// Переконайтесь, що використовується правильний ключ без пробілів
 if (!sessionStorage.getItem('startPage')) {
     sessionStorage.setItem('startPage', document.referrer);
 }
 
-window.onpopstate = function () {
+window.onpopstate = function (event) {
+    event.preventDefault();
     const startPage = sessionStorage.getItem('startPage');
     if (startPage) {
         window.location.href = startPage;
     }
 };
 
-// Використовуємо replaceState для збереження поточного стану сторінки
 window.onload = function () {
     window.history.replaceState(null, null, window.location.href);
 }
