@@ -13,15 +13,6 @@ function checkForm() {
   });
 }
 
-function dynamicUserLimit() {
-    const value = document.querySelector("#workers_count");
-    const input = document.querySelector("#workers");
-    value.textContent = input.value;
-    input.addEventListener("input", (event) => {
-        value.textContent = event.target.value;
-    });
-}
-
 if (!sessionStorage.getItem('startPage')) {
     sessionStorage.setItem('startPage', document.referrer);
 }
@@ -39,4 +30,3 @@ window.onload = function () {
 }
 
 checkForm();
-dynamicUserLimit();

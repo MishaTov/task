@@ -1,13 +1,8 @@
 const taskInfo = document.querySelector('#task-info');
-
-const editButton = document.querySelector('#edit-task');
 const deleteButton = document.querySelector('#delete-task');
-const deleteTaskButton = document.querySelector('#delete-task-button');
-
-
 const taskUid = taskInfo.getAttribute('task_uid');
 
-const removeFileButtons = document.querySelectorAll('.remove-file');
+const removeFileButtons = document.querySelectorAll('.remove-file-button');
 
 function deleteTask() {
     const descriptionUrl = taskInfo.getAttribute('description_url');
@@ -65,17 +60,6 @@ window.onload = function () {
     document.getElementById('edit-task-form').reset();
 };
 
-function dynamicUserLimit() {
-    const value = document.querySelector("#edit-form-user-count");
-    const input = document.querySelector("#edit-form-user-limit");
-    value.textContent = input.value;
-    input.addEventListener("input", (event) => {
-        value.textContent = event.target.value;
-    });
-}
-
-
-dynamicUserLimit();
 validateForm();
 deleteButton.addEventListener('click', deleteTask);
 removeFileButtons.forEach((button) => {

@@ -22,47 +22,45 @@
                     <div class="modal-dialog modal-fullscreen">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h1 class="modal-title" style="position:relative; font-size: 50px;">Edit task</h1>
-                                <div style="display: flex; right: 1%; position: absolute; height: 30px">
-                                <button type="button" class="btn btn-primary" id="edit-save-changes" style="margin-right: 15px; font-size: 14px; padding: 0px 5px">
+                                <h1 class="modal-title edit-task-header">Edit task</h1>
+                                <div class="edit-task-buttons">
+                                <button type="button" class="btn btn-primary edit-action-button save-changes" id="edit-save-changes">
                                     Save changes
                                 </button>
-                                <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="edit-cancel-changes" style="margin: 0; font-size: 14px; padding: 0px 5px">
+                                <button type="button" class="btn btn-danger edit-action-button cancel-changes" data-bs-dismiss="modal" id="edit-cancel-changes">
                                     Cancel
                                 </button>
                                 </div>
                             </div>
-                            <div class="modal-body" style="position:relative; display: flex;">
-                                <div style="width: 40%;">
-                                    <form id="edit-task-form" enctype="multipart/form-data">
-                                        {{ task_form.hidden_tag() }}
-                                        <h3>Subject</h3>
-                                        {{ task_form.subject(class='form-control', style='margin_bottom: 15px', id='edit-form-subject') }}
-                                        <br>
-                                        <h3>Description</h3>
-                                        {{ task_form.description(class='form-control', style='margin_bottom: 15px; max-height: 500px;', id='edit-form-description') }}
-                                        <br>
-                                        <h3>Deadline</h3>
-                                        {{ task_form.deadline(class='form-control', style='margin_bottom: 15px; width: auto;', id='edit-form-deadline') }}
-                                        <br>
-                                        <h3>Attachments</h3>
-                                        {% for file in task.files %}
-                                            <span style="position: relative; display: inline-block; margin: 15px 30px 0px 0px; height: 25px;">
-                                                <a href="{{ url_for('downloadfile', file_uid=file.uid) }}" class="btn btn-outline-dark d-flex d-inline-flex" style="height: inherit; width: 150px; font-size: 14px; padding: 2px 5px; align-items: center; justify-content: center;"><span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ file.filename }}</span></a>
-                                                <button class="remove-file" type="button" style="background-color: inherit; border: 1px solid black; border-radius: 50%; width: 15px; height: 15px; position: absolute; top: -2px; right: -17px; padding: 0; display: flex; align-items: center; justify-content: center">
-                                                    <span style="display: block; font-size: 18px; line-height: 0.7; height: 15px; width: 15px">×</span>
-                                                </button>
-                                            </span>
-                                        {% endfor %}
-                                        {{ task_form.files(class='form-control form-control-sm', style='margin-bottom: 15px; margin-top: 15px; width: auto;', id='edit-form-attachments') }}
-                                        <br>
-                                        <div id="task-user-limit" user_limit="{{ task.user_limit }}">
-                                            <h3>Max count of workers for this task:</h3>
-                                            {{ task_form.user_limit(class='form-range', style='width: 50%; max-width: 300px; min-width: 200px; height: 20px;', id='edit-form-user-limit') }}
-                                            <output style="margin-left: 10px; font-size: inherit; height: 20px; padding: 0;" id="edit-form-user-count"></output>
-                                        </div>
-                                    </form>
-                                </div>
+                            <div class="modal-body edit-modal-body">
+                                <form id="edit-task-form" enctype="multipart/form-data">
+                                    {{ task_form.hidden_tag() }}
+                                    <h3>Subject</h3>
+                                    {{ task_form.subject(class='form-control edit-form-margin', id='edit-form-subject') }}
+                                    <br>
+                                    <h3>Description</h3>
+                                    {{ task_form.description(class='form-control edit-form-margin', style='max-height: 500px;', id='edit-form-description') }}
+                                    <br>
+                                    <h3>Deadline</h3>
+                                    {{ task_form.deadline(class='form-control edit-form-margin', style='width: auto;', id='edit-form-deadline') }}
+                                    <br>
+                                    <h3>Attachments</h3>
+                                    {% for file in task.files %}
+                                        <span class="file-element">
+                                            <a href="{{ url_for('downloadfile', file_uid=file.uid) }}" class="btn btn-outline-dark d-flex d-inline-flex file-link"><span class="file-name">{{ file.filename }}</span></a>
+                                            <button class="remove-file-button" type="button">
+                                                <span class="remove-file-symbol">×</span>
+                                            </button>
+                                        </span>
+                                    {% endfor %}
+                                    {{ task_form.files(class='form-control form-control-sm edit-form-margin', style='margin-top: 15px; width: auto;', id='edit-form-attachments') }}
+                                    <br>
+                                    <div id="task-user-limit" user_limit="{{ task.user_limit }}">
+                                        <h3>Max count of workers for this task:</h3>
+                                        {{ task_form.user_limit(class='form-range edit-user-limit', id='user-limit') }}
+                                        <output class="edit-user-limit-value" id="user-count"></output>
+                                    </div>
+                                </form>
                             </div>
                         </div>
                     </div>
@@ -91,9 +89,8 @@
         </div>
         <div class="position-relative top-0 end-0 d-flex">
             <div class="position-relative" id="task-label">{{ task.label }}</div>
-            <span class="fs-5 position-relative" style="color: {{ color[task.label] }}; top: -4px; left: 3px" id="color-label"> ● </span>
+            <span class="fs-5 position-relative color-label" style="color: {{ color[task.label] }};" id="color-label"> ● </span>
         </div>
-        {#    <div class="position-relative">#}
         <div class="position-relative" style="bottom: 0px" id="time-label">
         <span class="fw-bold">Due to:</span> <span id="task-deadline">{{ task.deadline.strftime('%d %B %Y %H:%M') }}</span>
         <br>
@@ -101,11 +98,11 @@
         </div>
         <div class="d-inline-flex" id="accept-reject-button" url="{{ url_for('acceptreject', task_uid=task.uid) }}" cur_user="{{ current_user.username }}">
             {% if current_user in task.users %}
-                <button type="button" class="btn btn-primary visually-hidden" id="accept-task" style="margin-top: 5px; padding-top: 3px; padding-bottom: 3px; width: 80px; text-align: center">Accept</button>
-                <button type="button" class="btn btn-danger" id="reject-task" style="margin-top: 5px; padding-top: 3px; padding-bottom: 3px; width: 80px; text-align: center">Reject</button>
+                <button type="button" class="btn btn-primary visually-hidden assign-task-button" id="accept-task">Accept</button>
+                <button type="button" class="btn btn-danger assign-task-button" id="reject-task">Reject</button>
             {% else %}
-                <button type="button" class="btn btn-primary" id="accept-task" style="margin-top: 5px; padding-top: 3px; padding-bottom: 3px; width: 80px; text-align: center">Accept</button>
-                <button type="button" class="btn btn-danger visually-hidden" id="reject-task" style="margin-top: 5px; padding-top: 3px; padding-bottom: 3px; width: 80px; text-align: center">Reject</button>
+                <button type="button" class="btn btn-primary assign-task-button" id="accept-task">Accept</button>
+                <button type="button" class="btn btn-danger visually-hidden assign-task-button" id="reject-task">Reject</button>
             {% endif %}
         </div>
         <div class="toast-container position-absolute bottom-0 end-0 m-3" id="toast-messages-container">
@@ -123,41 +120,40 @@
                 No one does this task
             {%  endif %}
         </span>
-        {#    </div>#}
-        <div class="text-break" style="margin: 80px 0px 0px 0px">
+        <div class="text-break" style="margin: 80px 0 0 0">
             <h3>Description:</h3>
             <div id="task-description">{{ task.description }}</div>
         </div>
         <div class="mt-3"><h3>Attachments:</h3>
         <div id="task-attachments">
             {% for file in task.files %}
-                <a href="{{ url_for('downloadfile', file_uid=file.uid) }}" class="btn btn-outline-dark d-flex d-inline-flex" style="height: 30px; max-width: 150px; font-size: 14px; padding: 2px 5px; margin-top: 5px; align-items: center">{{ file.filename }}</a>
+                <a href="{{ url_for('downloadfile', file_uid=file.uid) }}" class="btn btn-outline-dark d-flex d-inline-flex download-file-button">{{ file.filename }}</a>
             {% endfor %}
         </div>
         </div>
         <br>
         <p class="mt-5"><span class="fw-bold">Created:</span> {{ task.created.strftime('%d %B %Y') }} by <a class="link-underline link-underline-opacity-0" href="{{ url_for('profile', username=task.created_by) }}">{{ task.created_by }}</a></p>
 </div>
-<div style="height: 90vh; width: 14%; padding: 5px;">
-    <div style="height: 90%; overflow: auto; border: 1px solid rgba(0, 0, 0, 0.3); padding: 5px" id="comments-div">
+<div class="comments-section">
+    <div class="comments-list" id="comments-list">
         {% for comment in task.comments %}
-        <div class="comment-element" style="position: relative; padding: 0px 3px 0px 3px; margin-bottom: 10px;" id="comment-{{ comment.uid }}">
+        <div class="comment" id="comment-{{ comment.uid }}">
             {% if current_user.username ==  comment.author %}
-            <span class="comment-edit-delete" style="position: absolute; right: 5px; height: 12px; width: 26px; font-size: 12px; top: 5px; display: none; justify-content: space-between; align-items: center; z-index: 10;">
-                <button style="background-color: inherit; border: none; height: 12px; width: 12px; padding: 0; font-size: 12px; display: flex; justify-content: center; align-items: center;" id="comment-edit">
-                    <img src="{{ url_for('static', filename='img/edit_msg.png') }}" alt="Edit comment" style="height: 12px; width: 12px;">
+            <span class="comment-buttons">
+                <button class="comment-action-button" id="comment-edit">
+                    <img class="comment-action-img" src="{{ url_for('static', filename='img/edit_msg.png') }}" alt="Edit comment">
                 </button>
-                <button style="background-color: inherit; border: none; height: 12px; width: 12px; padding: 0; font-size: 12px; display: flex; justify-content: center; align-items: center;" id="comment-delete">
-                    <img src="{{ url_for('static', filename='img/delete_msg.png') }}" alt="Delete comment" style="height: 12px; width: 12px;">
+                <button class="comment-action-button" id="comment-delete">
+                    <img class="comment-action-img" src="{{ url_for('static', filename='img/delete_msg.png') }}" alt="Delete comment">
                 </button>
             </span>
             {% endif %}
-            <div style="position: relative; margin-left: 5px; font-size: 12px">
+            <div class="comment-author">
                 <a class="link-opacity-75-hover link-underline link-underline-opacity-0" href="{{ url_for('profile', username=comment.author) }}">{{ comment.author }}</a>
             </div>
-            <div style="word-break: break-all; border: 1px solid rgba(0, 0, 0, 0.5); border-radius: 5px; background-color: rgba(0,15,135,0.1); padding: 2px 5px 0px 2px; font-size: 12px">
-                <span class="comment-content">{{ comment.content.replace('\n', '<br>').replace(' ', '&nbsp;') | safe }}</span>
-                <div style="text-align: right; margin-top: 2px; font-size: 10px;">
+            <div class="comment-content">
+                <span>{{ comment.content.replace('\n', '<br>').replace(' ', '&nbsp;') | safe }}</span>
+                <div class="comment-created">
                     {{ comment.created.strftime('%d %b %Y %H:%M') }}
                 </div>
             </div>
@@ -165,10 +161,10 @@
         {% endfor %}
     </div>
     <div style="margin-top: 5px">
-        <textarea placeholder="Type your comment here" style="outline: none; border: 1px solid rgba(0, 0, 0, 0.3); border-bottom: 2px solid black; font-size: 12px; resize: none; width: 100%; min-height: 50px; max-height: 250px; scrollbar-width: none; padding-right: 20px;" id="comment-input-field"></textarea>
-        <div style="position: relative; display: inline-block; height: 15px; width:15px; padding: 0px; font-size: 0px; top: -15px; left: 93%;">
-            <img src="{{ url_for('static', filename='img/send_msg.png') }}" alt="Send comment" style="height: 15px; width: 15px; padding: 0">
-            <div style="text-align: right;"><button style="position: absolute; top: 0px; left: 0px; opacity: 0; height: 15px; width: 15px; padding: 0px;" id="comment-send">Send</button></div>
+        <textarea class="comment-input-field" placeholder="Type your comment here" id="comment-input-field"></textarea>
+        <div class="comment-send-element">
+            <img class="comment-send-img" src="{{ url_for('static', filename='img/send_msg.png') }}" alt="Send comment">
+            <div style="text-align: right;"><button class="comment-send-button" id="comment-send">Send</button></div>
         </div>
     </div>
 </div>
@@ -180,14 +176,7 @@
 <script type="module" src="{{ url_for('static', filename='js/task_socketio_handlers.js') }}"></script>
 <script type="module" src="{{ url_for('static', filename='js/edit_delete_task.js') }}"></script>
 <script type="module" src="{{ url_for('static', filename='js/comments.js') }}"></script>
+<script src="{{ url_for('static', filename='js/user_limit.js') }}"></script>
 
-<script>
-    const value = document.querySelector("#edit-form-user-count");
-    const input = document.querySelector("#edit-form-user-limit");
-    value.textContent = input.value;
-    input.addEventListener("input", (event) => {
-      value.textContent = event.target.value;
-    });
-</script>
 
 {% endblock %}
