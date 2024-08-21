@@ -1,9 +1,5 @@
-# from datetime import datetime
-# from time import sleep
-
-from flask import make_response, request, jsonify
+from flask import make_response, request, jsonify, redirect, url_for
 from flask_login import login_required
-from flask_socketio import emit
 
 from src import socketio
 from src.forms.task_form import TaskForm
@@ -15,6 +11,8 @@ class TaskDescription(BaseResource):
     @login_required
     def get(self, task_uid):
         task = Task.get_task(task_uid)
+        if not task:
+            return redirect(url_for('assignment'))
         task_form = TaskForm(obj=task)
         color_label = {'Waiting for an assignment': '#00FFD8',
                        'In progress': '#FFD900',

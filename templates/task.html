@@ -151,8 +151,8 @@
             <div class="comment-author">
                 <a class="link-opacity-75-hover link-underline link-underline-opacity-0" href="{{ url_for('profile', username=comment.author) }}">{{ comment.author }}</a>
             </div>
-            <div class="comment-content">
-                <span>{{ comment.content.replace('\n', '<br>').replace(' ', '&nbsp;') | safe }}</span>
+            <div class="comment-content-element">
+                <span class="comment-content">{{ comment.content.replace('\n', '<br>').replace(' ', '&nbsp;') | safe }}</span>
                 <div class="comment-created">
                     {{ comment.created.strftime('%d %b %Y %H:%M') }}
                 </div>
