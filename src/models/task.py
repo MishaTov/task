@@ -61,11 +61,9 @@ class Task(db.Model):
         )
         if files:
             Task.add_files(files, new_task)
-            # files_ = File.upload(files, new_task.id)
-            # for file in files_:
-            #     new_task.files.append(file)
         db.session.add(new_task)
         db.session.commit()
+        return new_task
 
     @staticmethod
     def post_comment(task_uid, content):

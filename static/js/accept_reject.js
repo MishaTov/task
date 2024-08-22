@@ -1,8 +1,8 @@
 import { socketio } from "./socket.js";
 
-const acceptButton = document.querySelector('#accept-task');
-const rejectButton = document.querySelector('#reject-task');
-const buttonDiv = document.querySelector('#accept-reject-button');
+const acceptButton = document.getElementById('accept-task');
+const rejectButton = document.getElementById('reject-task');
+const buttonDiv = document.getElementById('accept-reject-button');
 const user = buttonDiv.getAttribute('cur_user');
 
 function accept() {
@@ -18,7 +18,7 @@ function reject() {
 }
 
 function showInfo(success, message, action) {
-    const toastContainer = document.querySelector('#toast-messages-container');
+    const toastContainer = document.getElementById('toast-messages-container');
     let color, headerText;
     if (success) {
         color = action === 'Accept' ? '#9eff00' : '#ff006d';
@@ -48,7 +48,7 @@ function action(button) {
     button.classList.add('disabled');
     const requestMethod = button === acceptButton ? 'POST' : 'DELETE';
     const url = buttonDiv.getAttribute('url');
-    const taskUid = document.querySelector('#task-info').getAttribute('task_uid');
+    const taskUid = document.querySelector('.task-info').getAttribute('id');
     fetch(url, {
         method: requestMethod,
         headers: {

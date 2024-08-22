@@ -21,21 +21,18 @@
 <br>
 <div class="position-relative w-50" id="tasks">
 {% for task in tasks %}
-<a class="task-div" href="{{ url_for('taskdescription', task_uid=task.uid) }}" id="task-info" task_uid="{{ task.uid }}">
-<div class="task-link m-2 p-2 position-relative">
+<a class="task-info" href="{{ url_for('taskdescription', task_uid=task.uid) }}" id="{{ task.uid }}">
+<div class="task-link">
     <div class="task-subject-div">
-        <div class="fs-4 text-break lh-sm task-subject" id="task-subject-{{ task.uid }}">{{ task.subject }}</div>
-        <div class="position-absolute top-0 end-0 d-flex">
-        <div class="position-relative" style="right: 8px" id="task-label-{{ task.uid }}">{{ task.label }}</div>
-            <span class="fs-5 position-relative task-color-label" style="color: {{ color[task.label] }};" id="color-label-{{ task.uid }}"> ● </span>
+        <div class="task-subject" id="task-subject-{{ task.uid }}">{{ task.subject }}</div>
+        <div class="task-label-element">
+            <div class="task-label" id="task-label-{{ task.uid }}">{{ task.label }}</div>
+            <span class="task-color-label" style="color: {{ color[task.label] }};" id="color-label-{{ task.uid }}"> ● </span>
         </div>
     </div>
-    <div class="position-relative">
-    <div class="position-relative" style="bottom: 0" id="time-label-{{ task.uid }}">
-    <span class="fw-bold" id="task-deadline-{{ task.uid }}">Due to:</span> {{ task.deadline.strftime('%d %B %Y %H:%M') }}
-    <br>
-    <span class="fw-bold">Time remaining:</span> <span data-deadline="{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%S') }}" id="time-left"></span>
-    </div>
+    <div class="time-label" id="time-label-{{ task.uid }}">
+        <div id="task-deadline-{{ task.uid }}"><strong>Due to: </strong>{{ task.deadline.strftime('%d %B %Y %H:%M') }}</div>
+        <strong>Time remaining:</strong> <span class="time-left" data-deadline="{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%S') }}"></span>
     </div>
 </div>
 </a>

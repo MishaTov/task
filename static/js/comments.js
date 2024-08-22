@@ -1,12 +1,12 @@
 import {socketio} from "./socket.js";
 
-const commentsList = document.querySelector('#comments-list');
-const sendCommentButton = document.querySelector('#comment-send');
-const commentInputField = document.querySelector('#comment-input-field');
+const commentsList = document.getElementById('comments-list');
+const sendCommentButton = document.getElementById('comment-send');
+const commentInputField = document.getElementById('comment-input-field');
 const commentElements = document.querySelectorAll('.comment');
 
-const url = document.querySelector('#task-info').getAttribute('description_url');
-const currentTaskUid = document.querySelector('#task-info').getAttribute('task_uid');
+const url = document.querySelector('.task-info').getAttribute('description_url');
+const currentTaskUid = document.querySelector('.task-info').getAttribute('id');
 
 let editMode = false;
 let activeCommentUid;
@@ -65,11 +65,11 @@ function showNewComment(comment) {
     deleteCommentImg.classList.add('comment-action-img')
 
     const editCommentButton = buildActionButton();
-    editCommentButton.setAttribute('id', 'comment-edit');
+    editCommentButton.classList.add('comment-edit-button');
     editCommentButton.appendChild(editCommentImg);
 
     const deleteCommentButton = buildActionButton();
-    deleteCommentButton.setAttribute('id', 'comment-delete');
+    deleteCommentButton.classList.add('comment-delete-button');
     deleteCommentButton.appendChild(deleteCommentImg);
 
     actionButtons.appendChild(editCommentButton);
@@ -94,7 +94,7 @@ function showNewComment(comment) {
 }
 
 function updateComment(comment) {
-    const commentElement = document.querySelector(`#comment-${comment.comment_uid}`);
+    const commentElement = document.getElementById(`comment-${comment.comment_uid}`);
     commentElement.querySelector('.comment-content').innerHTML = comment.content
         .replaceAll('\n', '<br>')
         .replaceAll(' ', '&nbsp;');
@@ -168,15 +168,15 @@ function deleteComment() {
 
 function removeComment(comment) {
     editMode = false;
-    const currentComment = document.querySelector(`#comment-${comment.comment_uid}`);
+    const currentComment = document.getElementById(`comment-${comment.comment_uid}`);
     currentComment.remove();
 }
 
 function setCommentListeners(comment) {
     comment.onmouseover = showCommentActionButtons;
     comment.onmouseout = hideCommentActionButtons;
-    comment.querySelector('#comment-edit').addEventListener('click', editComment);
-    comment.querySelector('#comment-delete').addEventListener('click', deleteComment);
+    comment.querySelector('.comment-edit-button').addEventListener('click', editComment);
+    comment.querySelector('.comment-delete-button').addEventListener('click', deleteComment);
 }
 
 commentElements.forEach((comment) => {

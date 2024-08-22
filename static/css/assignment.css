@@ -1,5 +1,8 @@
 .task-link {
+    position: relative;
     border: 1px solid;
+    margin: 8px;
+    padding: 8px;
 }
 
 .task-link:hover {
@@ -13,7 +16,7 @@
     height: 33px;
 }
 
-.task-div {
+.task-info {
     text-decoration: none;
     color: inherit;
 }
@@ -24,10 +27,33 @@
 
 .task-subject {
     margin: 20px 45px 0 0;
+    font-size: 24px;
+    overflow-wrap: break-word;
+    word-break: break-word;
+    line-height: 1.25;
+}
+
+.task-label-element {
+    position: absolute;
+    display: flex;
+    top: 0;
+    right: 0;
+}
+
+.task-label {
+    position: relative;
+    right: 8px;
 }
 
 .task-color-label {
+    position: relative;
     top: -4px;
     right: 5px;
+    font-size: 20px;
+}
+
+.time-label {
+    position: relative;
+    bottom: 0;
 }
 

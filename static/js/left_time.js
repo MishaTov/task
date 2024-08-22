@@ -1,12 +1,12 @@
 import { socketio } from "./socket.js";
 
 function updateTimeLeft() {
-    const timeLeftElements = document.querySelectorAll('#time-left');
+    const timeLeftElements = document.querySelectorAll('.time-left');
     timeLeftElements.forEach(el => {
         const deadline = new Date(el.getAttribute('data-deadline'));
         const now = new Date();
         const timeDiff = deadline - now;
-        const taskUid = el.closest('#task-info').getAttribute('task_uid')
+        const taskUid = el.closest('.task-info').getAttribute('id')
         if (timeDiff > 0) {
             const days = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
             const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));

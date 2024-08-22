@@ -8,7 +8,7 @@
 {% block content %}
     {{ super() }}
 <div class="d-flex">
-<div class="p-4" id="task-info" description_url="{{ url_for('taskdescription', task_uid=task.uid) }}" assignment_url="{{ url_for('assignment') }}" task_uid="{{ task.uid }}" style="width: 85%">
+<div class="task-info" description_url="{{ url_for('taskdescription', task_uid=task.uid) }}" assignment_url="{{ url_for('assignment') }}" id="{{ task.uid }}" style="width: 85%">
         <div class="d-flex">
             <h1 id="task-subject" class="text-break">{{ task.subject }}</h1>
             {% if current_user.username == task.created_by %}
@@ -94,7 +94,7 @@
         <div class="position-relative" style="bottom: 0px" id="time-label">
         <span class="fw-bold">Due to:</span> <span id="task-deadline">{{ task.deadline.strftime('%d %B %Y %H:%M') }}</span>
         <br>
-        <span class="fw-bold">Time remaining:</span> <span data-deadline="{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%S') }}" id="time-left"></span>
+        <span class="fw-bold">Time remaining:</span> <span class="time-left" data-deadline="{{ task.deadline.strftime('%Y-%m-%dT%H:%M:%S') }}"></span>
         </div>
         <div class="d-inline-flex" id="accept-reject-button" url="{{ url_for('acceptreject', task_uid=task.uid) }}" cur_user="{{ current_user.username }}">
             {% if current_user in task.users %}
@@ -140,10 +140,10 @@
         <div class="comment" id="comment-{{ comment.uid }}">
             {% if current_user.username ==  comment.author %}
             <span class="comment-buttons">
-                <button class="comment-action-button" id="comment-edit">
+                <button class="comment-edit-button">
                     <img class="comment-action-img" src="{{ url_for('static', filename='img/edit_msg.png') }}" alt="Edit comment">
                 </button>
-                <button class="comment-action-button" id="comment-delete">
+                <button class="comment-delete-button">
                     <img class="comment-action-img" src="{{ url_for('static', filename='img/delete_msg.png') }}" alt="Delete comment">
                 </button>
             </span>
@@ -174,9 +174,11 @@
 <script type="module" src="{{ url_for('static', filename='js/left_time.js') }}"></script>
 <script type="module" src="{{ url_for('static', filename='js/accept_reject.js') }}"></script>
 <script type="module" src="{{ url_for('static', filename='js/task_socketio_handlers.js') }}"></script>
-<script type="module" src="{{ url_for('static', filename='js/edit_delete_task.js') }}"></script>
 <script type="module" src="{{ url_for('static', filename='js/comments.js') }}"></script>
-<script src="{{ url_for('static', filename='js/user_limit.js') }}"></script>
 
+{% if current_user.username == task.created_by %}
+<script type="module" src="{{ url_for('static', filename='js/edit_delete_task.js') }}"></script>
+<script src="{{ url_for('static', filename='js/user_limit.js') }}"></script>
+{% endif %}
 
 {% endblock %}

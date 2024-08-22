@@ -61,6 +61,9 @@ class TaskDescription(BaseResource):
                 User.update_user_info(user.username, current_task_number=user.current_task_number)
             subject = task.subject
             task.delete()
+            socketio.emit('delete task',
+                          {'task_uid': task_uid},
+                          include_self=True)
             return jsonify({'message': f'Task "{subject}" was deleted'})
         elif data.get('type') == 'comment':
             comment_uid = data.get('comment_uid')

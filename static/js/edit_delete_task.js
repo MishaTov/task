@@ -1,6 +1,6 @@
-const taskInfo = document.querySelector('#task-info');
-const deleteButton = document.querySelector('#delete-task');
-const taskUid = taskInfo.getAttribute('task_uid');
+const taskInfo = document.querySelector('.task-info');
+const deleteButton = document.getElementById('delete-task');
+const taskUid = taskInfo.getAttribute('id');
 
 const removeFileButtons = document.querySelectorAll('.remove-file-button');
 
@@ -47,14 +47,6 @@ function validateForm() {
         }, false);
     })
 }
-
-window.addEventListener('pageshow', function (event) {
-    let form = document.getElementById('edit-task-form');
-    if (event.persisted) {
-        form.reset();
-        form.classList.remove('was-validated');
-    }
-});
 
 window.onload = function () {
     document.getElementById('edit-task-form').reset();

@@ -1,3 +1,7 @@
+.task-info {
+    padding: 24px;
+}
+
 .action-task-button {
     background-color: inherit;
     border: none;
@@ -161,7 +165,7 @@
     z-index: 10;
 }
 
-.comment-action-button {
+.comment-edit-button, .comment-delete-button {
     background-color: inherit;
     border: none;
     height: 12px;

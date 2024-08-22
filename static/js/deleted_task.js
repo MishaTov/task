@@ -1,5 +1,5 @@
 function showTaskDelMessage(delMessage){
-    const pageDiv = document.querySelector('#page-div');
+    const pageDiv = document.getElementById('page-div');
 
     const parentDiv = document.createElement('div');
     parentDiv.classList.add('toast');

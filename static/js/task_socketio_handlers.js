@@ -10,7 +10,7 @@ const taskDeadline = document.getElementById('task-deadline');
 const taskUserLimit = document.getElementById('task-user-limit');
 const taskAttachments = document.getElementById('task-attachments');
 
-const uidTask = document.getElementById('task-info').getAttribute('task_uid');
+const uidTask = document.querySelector('.task-info').getAttribute('id');
 
 function buildLink(username) {
     return `<a class="link-underline link-underline-opacity-0" href="/profile/${username}">${username}</a>`;
