@@ -24,36 +24,53 @@
                             <div class="modal-header">
                                 <h1 class="modal-title edit-task-header">Edit task</h1>
                                 <div class="edit-task-buttons">
-                                <button type="button" class="btn btn-primary edit-action-button save-changes" id="edit-save-changes">
-                                    Save changes
-                                </button>
-                                <button type="button" class="btn btn-danger edit-action-button cancel-changes" data-bs-dismiss="modal" id="edit-cancel-changes">
-                                    Cancel
-                                </button>
+{#                                <button type="button" class="btn btn-primary edit-action-button save-changes" id="edit-save-changes">#}
+{#                                    Save changes#}
+{#                                </button>#}
+                                    {{ task_form.submit(class="btn btn-primary edit-action-button save-changes", value="Save changes", id="edit-save-changes") }}
+                                    <button type="button" class="btn btn-danger edit-action-button cancel-changes" data-bs-dismiss="modal" id="edit-cancel-changes">
+                                        Cancel
+                                    </button>
                                 </div>
                             </div>
                             <div class="modal-body edit-modal-body">
-                                <form id="edit-task-form" enctype="multipart/form-data">
+                                <form id="edit-task-form" action="{{ url_for('taskdescription', task_uid=task.uid) }}" method="post" novalidate enctype="multipart/form-data">
                                     {{ task_form.hidden_tag() }}
                                     <h3>Subject</h3>
-                                    {{ task_form.subject(class='form-control edit-form-margin', id='edit-form-subject') }}
+                                        {% if task_form.subject.errors %}
+                                            {{ task_form.subject(class='form-control edit-form-margin is-invalid', id='edit-form-subject') }}
+                                        {% else %}
+                                            {{ task_form.subject(class='form-control edit-form-margin', id='edit-form-subject') }}
+                                        {% endif %}
                                     <br>
                                     <h3>Description</h3>
-                                    {{ task_form.description(class='form-control edit-form-margin', style='max-height: 500px;', id='edit-form-description') }}
+                                        {% if task_form.description.errors %}
+                                            {{ task_form.description(class='form-control edit-form-margin is-invalid', style='max-height: 500px;', id='edit-form-description') }}
+                                        {% else %}
+                                            {{ task_form.description(class='form-control edit-form-margin', style='max-height: 500px;', id='edit-form-description') }}
+                                        {% endif %}
                                     <br>
                                     <h3>Deadline</h3>
-                                    {{ task_form.deadline(class='form-control edit-form-margin', style='width: auto;', id='edit-form-deadline') }}
+                                        {% if task_form.description.errors %}
+                                            {{ task_form.deadline(class='form-control edit-form-margin is-invalid', style='width: auto;', id='edit-form-deadline') }}
+                                        {% else %}
+                                            {{ task_form.deadline(class='form-control edit-form-margin', style='width: auto;', id='edit-form-deadline') }}
+                                        {% endif %}
                                     <br>
                                     <h3>Attachments</h3>
                                     {% for file in task.files %}
-                                        <span class="file-element">
+                                        <span class="file-element" id="file-{{ file.uid }}">
                                             <a href="{{ url_for('downloadfile', file_uid=file.uid) }}" class="btn btn-outline-dark d-flex d-inline-flex file-link"><span class="file-name">{{ file.filename }}</span></a>
                                             <button class="remove-file-button" type="button">
                                                 <span class="remove-file-symbol">×</span>
                                             </button>
                                         </span>
                                     {% endfor %}
-                                    {{ task_form.files(class='form-control form-control-sm edit-form-margin', style='margin-top: 15px; width: auto;', id='edit-form-attachments') }}
+                                        {% if task_form.description.errors %}
+                                            {{ task_form.files(class='form-control form-control-sm edit-form-margin is-invalid', style='margin-top: 15px; width: auto;', id='edit-form-attachments') }}
+                                        {% else %}
+                                            {{ task_form.files(class='form-control form-control-sm edit-form-margin', style='margin-top: 15px; width: auto;', id='edit-form-attachments') }}
+                                        {% endif %}
                                     <br>
                                     <div id="task-user-limit" user_limit="{{ task.user_limit }}">
                                         <h3>Max count of workers for this task:</h3>

@@ -38,6 +38,8 @@ class TaskDescription(BaseResource):
     def patch(**kwargs):
         data = request.get_json()
         if data.get('type') == 'task':
+            edit_form = TaskForm()
+            print(edit_form.validate_on_submit())
             task_uid = data.pop('task_uid')
             task_info = data.get('task_info')
             Task.update_task_info(task_uid, **task_info)
