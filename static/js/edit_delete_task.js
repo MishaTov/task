@@ -1,16 +1,27 @@
+const mainMenu = document.querySelector('.main-menu');
+const taskTab = document.querySelector('.task-tab');
+const editTaskTab = document.querySelector('.edit-task-tab')
+
 const taskInfo = document.querySelector('.task-info');
 const deleteButton = document.getElementById('delete-task');
+const editButton = document.getElementById('edit-task-button');
 const taskUid = taskInfo.getAttribute('id');
 
 const removeFileButtons = document.querySelectorAll('.remove-file-button');
 
-const saveChanges = document.getElementById('edit-save-changes');
+const saveChangesButton = document.getElementById('edit-save-changes');
+const cancelChangesButton = document.getElementById('edit-cancel-changes');
 
 
-const currentSubject = document.getElementById('edit-form-subject').value;
-const currentDescription = document.getElementById('edit-form-description').value;
-const currentDeadline = document.getElementById('edit-form-deadline').value;
-const currentUserLimit = document.getElementById('user-limit').value;
+const editSubjectField = document.getElementById('edit-form-subject');
+const editDescriptionField = document.getElementById('edit-form-description');
+const editDeadlineField = document.getElementById('edit-form-deadline');
+const editUserLimitField = document.getElementById('user-limit');
+
+const currentSubject = editSubjectField.value;
+const currentDescription = editDescriptionField.value;
+const currentDeadline = editDeadlineField.value;
+const currentUserLimit = editUserLimitField.value;
 
 
 function deleteTask() {
@@ -35,8 +46,8 @@ function deleteTask() {
         .catch(error => console.log(error));
 }
 
-function getCurrentFilesId() {
-    const currentFiles = document.querySelectorAll('.file-element');
+function getRemovedFiles() {
+    const currentFiles = document.querySelectorAll('.file-element.hidden');
     const currentFilesId = [];
     for (const file of currentFiles) {
         currentFilesId.push(file.getAttribute('id').replaceAll('file-', ''));
@@ -44,16 +55,17 @@ function getCurrentFilesId() {
     return currentFilesId;
 }
 
-function editTask() {
+function saveChanges() {
+    validateForm();
     const newSubject = document.getElementById('edit-form-subject').value;
     const newDescription = document.getElementById('edit-form-description').value;
     const newDeadline = document.getElementById('edit-form-deadline').value;
     const newUserLimit = document.getElementById('user-limit').value;
 
     const newFiles = Array.from(document.getElementById('edit-form-attachments').files);
-    const oldFilesId = getCurrentFilesId();
+    const removedFilesId = getRemovedFiles();
 
-    const dataToEdit = {new_files: newFiles, old_files: oldFilesId}
+    const dataToEdit = {new_files: newFiles, removed_files: removedFilesId};
     if (newSubject !== currentSubject) {
         dataToEdit.subject = newSubject;
     }
@@ -66,7 +78,7 @@ function editTask() {
     if (newUserLimit !== currentUserLimit) {
         dataToEdit.user_limit = newUserLimit;
     }
-
+    // console.log(dataToEdit);
     // console.log('current subject: ', currentSubject);
     // console.log('current description: ', currentDescription);
     // console.log('current deadline: ', currentDeadline);
@@ -79,13 +91,36 @@ function editTask() {
 }
 
 function removeFile() {
-    this.parentNode.remove();
+    this.parentNode.classList.add('hidden');
 }
 
+function showEditTaskTab() {
+    taskTab.classList.add('hidden');
+    mainMenu.classList.add('hidden');
+    editTaskTab.classList.remove('hidden');
+}
+
+function cancelChanges() {
+    resetForm();
+    editTaskTab.classList.add('hidden');
+    taskTab.classList.remove('hidden');
+    mainMenu.classList.remove('hidden');
+}
+
+function resetForm() {
+    editSubjectField.value = currentSubject;
+    editDescriptionField.value = currentDescription;
+    editDeadlineField.value = currentDeadline;
+    editUserLimitField.value = currentUserLimit;
+    const removedFiles = document.querySelectorAll('.file-element.hidden');
+    removedFiles.forEach((file) => {
+        file.classList.remove('hidden');
+    })
+}
 
 function validateForm() {
     const forms = document.querySelectorAll('.needs-validation');
-
+    console.log(forms);
     Array.from(forms).forEach(form => {
         form.addEventListener('submit', event => {
             if (!form.checkValidity()) {
@@ -97,15 +132,11 @@ function validateForm() {
     })
 }
 
-validateForm()
-
-window.onload = function () {
-    document.getElementById('edit-task-form').reset();
-};
-
 deleteButton.addEventListener('click', deleteTask);
 removeFileButtons.forEach((button) => {
     button.addEventListener('click', removeFile);
 })
 
-saveChanges.addEventListener('click', editTask);
+editButton.addEventListener('click', showEditTaskTab);
+saveChangesButton.addEventListener('click', saveChanges);
+cancelChangesButton.addEventListener('click', cancelChanges);

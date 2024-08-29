@@ -1,3 +1,16 @@
+.task-tab {
+    display: flex;
+    justify-content: space-between;
+}
+
+.edit-task-tab {
+
+}
+
+.hidden {
+    display: none !important;
+}
+
 .task-info {
     padding: 24px;
 }
@@ -17,16 +30,29 @@
     margin: 0 0 0 10px;
 }
 
+.edit-task-header-element {
+    height: 5%;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+    padding: 16px 24px 16px 24px;
+    position: relative;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
 .edit-task-header {
-    position:relative;
     font-size: 50px;
+}
+
+.edit-task-body {
+    width: 40%;
+    padding: 24px;
 }
 
 .edit-task-buttons {
     display: flex;
-    right: 1%;
-    position: absolute;
     height: 30px;
+    margin-right: 1%;
 }
 
 .edit-action-button {
@@ -40,12 +66,6 @@
 
 .cancel-changes {
     margin: 0;
-}
-
-.edit-modal-body {
-    position:relative;
-    display: flex;
-    width: 40%;
 }
 
 .edit-form-margin {
@@ -137,6 +157,7 @@
     height: 90vh;
     width: 14%;
     padding: 5px;
+    margin: 0 15px 0 15px;
 }
 
 .comments-list {
@@ -192,7 +213,7 @@
     word-break: break-all;
     border: 1px solid rgba(0, 0, 0, 0.5);
     border-radius: 5px;
-    background-color: rgba(0,15,135,0.1);
+    background-color: rgba(0, 15, 135, 0.1);
     padding: 2px 5px 0 2px;
     font-size: 12px;
 }
@@ -220,7 +241,7 @@
     position: relative;
     display: inline-block;
     height: 15px;
-    width:15px;
+    width: 15px;
     padding: 0;
     font-size: 0;
     top: -15px;

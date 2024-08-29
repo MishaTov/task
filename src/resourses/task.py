@@ -33,6 +33,9 @@ class TaskDescription(BaseResource):
                            'created': comment.created.strftime('%d %b %Y %H:%M'),
                            'author': comment.author},
                           include_self=True)
+        elif data.get('type') == 'task':
+            edit_form = TaskForm()
+            print(edit_form.validate_on_submit())
 
     @staticmethod
     def patch(**kwargs):
