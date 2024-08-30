@@ -149,8 +149,9 @@
         </div>
     </div>
     <div class="edit-task-body">
-        <form id="edit-task-form" action="{{ url_for('taskdescription', task_uid=task.uid) }}" method="post" novalidate enctype="multipart/form-data">
+        <form id="edit-task-form" edit_mode="{{ edit_mode }}" action="{{ url_for('taskdescription', task_uid=task.uid) }}" method="post" novalidate enctype="multipart/form-data">
             {{ task_form.hidden_tag() }}
+            <input type="hidden" name="task_uid" form="edit-task-form" value="{{ task.uid }}">
             <h3>Subject</h3>
                 {% if task_form.subject.errors %}
                     {{ task_form.subject(class='form-control edit-form-margin is-invalid', id='edit-form-subject') }}
@@ -166,11 +167,14 @@
                 {% endif %}
             <br>
             <h3>Deadline</h3>
-                {% if task_form.description.errors %}
+            <div class="field-element">
+                {% if task_form.deadline.errors %}
                     {{ task_form.deadline(class='form-control edit-form-margin is-invalid', style='width: auto;', id='edit-form-deadline') }}
+                    <span class="field-error">{{ task_form.deadline.errors[0] }}</span>
                 {% else %}
                     {{ task_form.deadline(class='form-control edit-form-margin', style='width: auto;', id='edit-form-deadline') }}
                 {% endif %}
+            </div>
             <br>
             <h3>Attachments</h3>
             {% for file in task.files %}
@@ -179,9 +183,10 @@
                     <button class="remove-file-button" type="button">
                         <span class="remove-file-symbol">×</span>
                     </button>
+                    <input type="hidden" name="removed_files" id="removed-files">
                 </div>
             {% endfor %}
-                {% if task_form.description.errors %}
+                {% if task_form.files.errors %}
                     {{ task_form.files(class='form-control form-control-sm edit-form-margin is-invalid', style='margin-top: 15px; width: auto;', id='edit-form-attachments') }}
                 {% else %}
                     {{ task_form.files(class='form-control form-control-sm edit-form-margin', style='margin-top: 15px; width: auto;', id='edit-form-attachments') }}

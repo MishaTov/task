@@ -8,6 +8,7 @@ const editButton = document.getElementById('edit-task-button');
 const taskUid = taskInfo.getAttribute('id');
 
 const removeFileButtons = document.querySelectorAll('.remove-file-button');
+const filesToRemove = document.getElementById('removed-files');
 
 const saveChangesButton = document.getElementById('edit-save-changes');
 const cancelChangesButton = document.getElementById('edit-cancel-changes');
@@ -46,38 +47,39 @@ function deleteTask() {
         .catch(error => console.log(error));
 }
 
-function getRemovedFiles() {
-    const currentFiles = document.querySelectorAll('.file-element.hidden');
-    const currentFilesId = [];
-    for (const file of currentFiles) {
-        currentFilesId.push(file.getAttribute('id').replaceAll('file-', ''));
-    }
-    return currentFilesId;
-}
+// function getRemovedFiles() {
+//     const currentFiles = document.querySelectorAll('.file-element.hidden');
+//     const currentFilesId = [];
+//     for (const file of currentFiles) {
+//         currentFilesId.push(file.getAttribute('id').replaceAll('file-', ''));
+//     }
+//     return currentFilesId;
+// }
 
 function saveChanges() {
-    validateForm();
-    const newSubject = document.getElementById('edit-form-subject').value;
-    const newDescription = document.getElementById('edit-form-description').value;
-    const newDeadline = document.getElementById('edit-form-deadline').value;
-    const newUserLimit = document.getElementById('user-limit').value;
-
-    const newFiles = Array.from(document.getElementById('edit-form-attachments').files);
-    const removedFilesId = getRemovedFiles();
-
-    const dataToEdit = {new_files: newFiles, removed_files: removedFilesId};
-    if (newSubject !== currentSubject) {
-        dataToEdit.subject = newSubject;
-    }
-    if (newDescription !== currentDescription) {
-        dataToEdit.description = newDescription;
-    }
-    if (newDeadline !== currentDeadline) {
-        dataToEdit.deadline = newDeadline;
-    }
-    if (newUserLimit !== currentUserLimit) {
-        dataToEdit.user_limit = newUserLimit;
-    }
+    // validateForm();
+    // const newSubject = document.getElementById('edit-form-subject').value;
+    // const newDescription = document.getElementById('edit-form-description').value;
+    // const newDeadline = document.getElementById('edit-form-deadline').value;
+    // const newUserLimit = document.getElementById('user-limit').value;
+    //
+    // const newFiles = Array.from(document.getElementById('edit-form-attachments').files);
+    // const removedFilesId = getRemovedFiles();
+    //
+    // const dataToEdit = {new_files: newFiles, removed_files: removedFilesId};
+    // if (newSubject !== currentSubject) {
+    //     dataToEdit.subject = newSubject;
+    // }
+    // if (newDescription !== currentDescription) {
+    //     dataToEdit.description = newDescription;
+    // }
+    // if (newDeadline !== currentDeadline) {
+    //     dataToEdit.deadline = newDeadline;
+    // }
+    // if (newUserLimit !== currentUserLimit) {
+    //     dataToEdit.user_limit = newUserLimit;
+    // }
+    // console.log(filesToRemove);
     // console.log(dataToEdit);
     // console.log('current subject: ', currentSubject);
     // console.log('current description: ', currentDescription);
@@ -91,6 +93,8 @@ function saveChanges() {
 }
 
 function removeFile() {
+    const fileUid = this.parentNode.getAttribute('id').replaceAll('file-', '');
+    filesToRemove.value += fileUid + ' ';
     this.parentNode.classList.add('hidden');
 }
 
@@ -118,24 +122,28 @@ function resetForm() {
     })
 }
 
-function validateForm() {
-    const forms = document.querySelectorAll('.needs-validation');
-    console.log(forms);
-    Array.from(forms).forEach(form => {
-        form.addEventListener('submit', event => {
-            if (!form.checkValidity()) {
-                event.preventDefault();
-                event.stopPropagation();
-            }
-            form.classList.add('was-validated');
-        }, false);
-    })
-}
+// function validateForm() {
+//     const forms = document.querySelectorAll('.needs-validation');
+//     console.log(forms);
+//     Array.from(forms).forEach(form => {
+//         form.addEventListener('submit', event => {
+//             if (!form.checkValidity()) {
+//                 event.preventDefault();
+//                 event.stopPropagation();
+//             }
+//             form.classList.add('was-validated');
+//         }, false);
+//     })
+// }
 
 deleteButton.addEventListener('click', deleteTask);
 removeFileButtons.forEach((button) => {
     button.addEventListener('click', removeFile);
 })
+
+window.onload = () => {
+    window.history.replaceState(null, null, window.location.href);
+}
 
 editButton.addEventListener('click', showEditTaskTab);
 saveChangesButton.addEventListener('click', saveChanges);

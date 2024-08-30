@@ -15,6 +15,18 @@
     padding: 24px;
 }
 
+.field-element {
+    display: flex;
+    align-items: center;
+}
+
+.field-error {
+    position: relative;
+    font-size: inherit;
+    color: #DC3545;
+    margin-left: 15px;
+}
+
 .action-task-button {
     background-color: inherit;
     border: none;
@@ -66,10 +78,6 @@
 
 .cancel-changes {
     margin: 0;
-}
-
-.edit-form-margin {
-    margin-bottom: 15px;
 }
 
 .file-element {

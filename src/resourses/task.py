@@ -20,22 +20,36 @@ class TaskDescription(BaseResource):
                        'Missed the deadline': '#FF0000'}
         return make_response(self.render_template('task.html', color=color_label, task=task, task_form=task_form))
 
-    @staticmethod
-    def post(**kwargs):
-        data = request.get_json()
-        if data.get('type') == 'comment':
-            task_uid = data.get('task_uid')
-            content = data.get('content')
-            comment = Task.post_comment(task_uid, content)
-            socketio.emit('new comment',
-                          {'comment_uid': comment.uid,
-                           'content': comment.content,
-                           'created': comment.created.strftime('%d %b %Y %H:%M'),
-                           'author': comment.author},
-                          include_self=True)
-        elif data.get('type') == 'task':
-            edit_form = TaskForm()
-            print(edit_form.validate_on_submit())
+    # @staticmethod
+    def post(self, **kwargs):
+        color_label = {'Waiting for an assignment': '#00FFD8',
+                       'In progress': '#FFD900',
+                       'Done': '#32FF00',
+                       'Missed the deadline': '#FF0000'}
+        if request.headers.get('Content-type').startswith('multipart/form-data'):
+            form = TaskForm()
+            task_uid = request.form.get('task_uid')
+            removed_files = request.form.get('removed_files')
+            task = Task.get_task(task_uid)
+            if form.validate_on_submit():
+                Task.update_task_info(task_uid, )
+            else:
+                return make_response(self.render_template('task.html',
+                                                          task_form=form,
+                                                          color=color_label,
+                                                          task=task,
+                                                          edit_mode=True))
+        # data = request.get_json()
+        # if data.get('type') == 'comment':
+        #     task_uid = data.get('task_uid')
+        #     content = data.get('content')
+        #     comment = Task.post_comment(task_uid, content)
+        #     socketio.emit('new comment',
+        #                   {'comment_uid': comment.uid,
+        #                    'content': comment.content,
+        #                    'created': comment.created.strftime('%d %b %Y %H:%M'),
+        #                    'author': comment.author},
+        #                   include_self=True)
 
     @staticmethod
     def patch(**kwargs):
